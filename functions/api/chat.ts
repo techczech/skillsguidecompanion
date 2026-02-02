@@ -398,9 +398,17 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
       }
     ]
 
-    // Call Gemini API
+    // Check if API key is configured
+    if (!env.GEMINI_API_KEY) {
+      return new Response(
+        JSON.stringify({ error: 'API key not configured' }),
+        { status: 500, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
+      )
+    }
+
+    // Call Gemini API - using Gemini 3 Flash Preview
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${env.GEMINI_API_KEY}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${env.GEMINI_API_KEY}`,
       {
         method: 'POST',
         headers: {
@@ -421,9 +429,9 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
 
     if (!response.ok) {
       const errorText = await response.text()
-      console.error('Gemini API error:', errorText)
+      console.error('Gemini API error:', response.status, errorText)
       return new Response(
-        JSON.stringify({ error: 'Failed to get response from AI' }),
+        JSON.stringify({ error: `AI service error: ${response.status}`, details: errorText }),
         { status: 500, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
       )
     }
