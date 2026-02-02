@@ -7,9 +7,14 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "remotion:studio": "remotion studio src/remotion/index.ts",
+    "remotion:render": "remotion render src/remotion/index.ts SkillsExplainer out/skills-explainer.mp4",
+    "remotion:render:preview": "remotion render src/remotion/index.ts SkillsExplainer out/preview.mp4 --quality=50 --scale=0.5"
   },
   "dependencies": {
+    "@remotion/cli": "^4.0.417",
+    "@remotion/player": "^4.0.417",
     "@tailwindcss/typography": "^0.5.19",
     "clsx": "^2.1.1",
     "framer-motion": "^11.15.0",
@@ -18,6 +23,7 @@
     "react-dom": "^19.0.0",
     "react-markdown": "^10.1.0",
     "react-router-dom": "^7.1.0",
+    "remotion": "^4.0.417",
     "tailwind-merge": "^2.6.0",
     "zustand": "^5.0.0"
   },

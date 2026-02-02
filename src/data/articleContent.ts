@@ -3,6 +3,7 @@ export interface ArticleSection {
   title: string
   content: string
   order: number
+  parentId?: string // For hierarchical sections (subsections)
 }
 
 // Key concept terms mapped to concept node IDs
@@ -291,6 +292,7 @@ Everything you see in your chat window is not the "model" but some software that
     id: 'models-use-tools',
     title: '2. Models can use tools',
     order: 10,
+    parentId: 'skills-teach-llm-capabilities',
     content: `How does something that can "only read and write text" use tools? Easy. The text the model outputs can be a computer command wrapped around a bit of code that says what to do with the command. And the software that is receiving the text from the LLM is simply watching for the right string of characters and then executes the code. So when the user asks the LLM to tell them what files are in a folder, the LLM would do something similar to what an old-timey computer user would do. Or something very similar. Before we had modern user interfaces we can click on, to see what files are in a folder, a computer user would have to type in a command in the terminal (aka the Shell). On Linux or MacOS this would be something like:
 
 > \`$ ls -la\`
@@ -338,6 +340,7 @@ Of course, the danger is that the LLM could also run a command like \`rm -rf /\`
     id: 'models-follow-instructions',
     title: '3. Models can follow instructions',
     order: 11,
+    parentId: 'skills-teach-llm-capabilities',
     content: `So, now we know that models can "only" write text based on what they "read" in the text they were given. That's what most people experience as "chat". They ask ChatGPT a question and one of the the GPT-5 series models that power it will generate a nice sounding answer.
 
 But that's only scratching the surface of what the model can "write" in response to "what they read". The model can follow quite complex instructions with things like:
@@ -386,6 +389,7 @@ This is both simple and effective.`,
     id: 'models-no-memory',
     title: 'Models have no memory',
     order: 13,
+    parentId: 'llm-limitations',
     content: `Did I mention that the models only write based on what they have in their context window right now? Yes. Well, let me mention it again. This is a fundamental limitation that chatbots and other apps have tried to solve for a long time.
 
 The first solution was simply ignoring the problem. Most of the time the user will not notice. This was soon replaced by "hidden summarisation" which is still the dominant solution. But most chatbots now also use "memories" which are basically notes that the model makes (using a tool call) when it sees something the user says that looks like it may be useful.
@@ -407,6 +411,28 @@ You'll notice something: **there's no magic here**. It's just text files telling
 That's the secret of working with LLMs in 2026. They're not mysterious. They're **text-in, text-out** systems with remarkable semantic capabilities. Skills just make that explicit.
 
 Once you see it, you can't unsee it. And once you can't unsee it, you'll start finding Skills everywhere—in every prompt that works well, in every agent that doesn't fall apart, in every workflow that actually saves time.`,
+  },
+  {
+    id: 'footnotes',
+    title: 'Footnotes',
+    order: 15,
+    content: `[^1]: Some frontier LLMs have been trained to be aware of this limitation so that they can call the summary tool themselves when they feel it's the right time.
+
+[^2]: The solution talked about here is often called "continual learning". Instead of the models being pre-trained once and then again when a version comes, they would learn continually as users use them.
+
+[^3]: It's always important to remember that the model writing a tool call does nothing on its own. The app which sends the prompt to the model and receives the response needs to be able to parse the response and then trigger the right commands and execute them. This execution may happen inside the app or it may be passed onto the operating system of the computer or onto the internet to some external server.
+
+[^4]: Claude - using my Readability Skill - says I should drop this section. It's probably right but I couldn't bring myself to do it.
+
+[^5]: For example, a custom GPT can use Code Interpreter to execute some code but the model has to write the code anew every time which makes it less reliable or predictable. The \`scripts\` part of Skills takes care of that. The code is always the same which makes it reliable. Also, the code runs on your machine which faster and opens up many more capabilities.
+
+[^6]: System prompt, for those that don't know, is a hidden prompt that is sent to the LLM along with every chat message you send - yes, every single one - you can see what that's like in a tool I build called [Model Context Explorer](https://modelcontextexplorer.edutools.fyi).
+
+[^7]: The reason for this is that the longer the text in the context window is, the more chance of some confusion because some contradictory parts the user may have forgotten about but that the model "sees."
+
+[^8]: Strictly speaking these are frequencies of n-grams (sequences of n words) rather than individual words but this does not take into account the meaning of the words. So the the most likely next word for "walk in ..." is "the" (as in "walk in the room") but it could also be "my" (as in "walk in my room"). This would be obvious if the preceding text was something like "There's nothing more annoying when my parents walk in ... room without asking." "The" is likely because it is the most frequent word in the English language and "walk in the" is the most common n-gram completion for "walk in". Using n-grams to predict the next word can take you surprisingly far but you will hit a wall and there's nothing you can do to get through unless you inject meaning.
+
+[^9]: Many people are working on models that remember (or learn continually) in a way that is similar to how humans do it. But we are not there yet and if we get there we may realize that that's not as good a way to do things we had hoped. For now, Skills are the best way to deal with the issue of context while using the newly expanded powers of tool calling and instruction following in today's frontier models.`,
   },
 ]
 

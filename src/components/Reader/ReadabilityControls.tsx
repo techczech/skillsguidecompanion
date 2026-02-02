@@ -7,6 +7,7 @@ const fontSizes = [
   { value: 'base', label: 'M' },
   { value: 'lg', label: 'L' },
   { value: 'xl', label: 'XL' },
+  { value: '2xl', label: '2XL' },
 ] as const
 
 const lineHeights = [

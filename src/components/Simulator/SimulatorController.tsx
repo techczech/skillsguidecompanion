@@ -21,6 +21,8 @@ import {
   skillMdContent,
   toolCallRead,
   toolCallExecute,
+  toolCallWrite,
+  generatedHtmlContent,
 } from '@/data/simulatorSteps'
 import { useProgressStore } from '@/store/progressStore'
 
@@ -226,6 +228,39 @@ export function SimulatorController() {
                   isVisible={true}
                   highlightSections={['html2pptx.js', 'presentations']}
                 />
+              )}
+
+              {step.phase === 'generate-html' && (
+                <motion.div
+                  key="generate-html"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="space-y-4"
+                >
+                  {/* Show the instruction being followed */}
+                  <div className="p-3 bg-purple-50 rounded-lg border border-purple-200">
+                    <div className="text-xs text-purple-600 font-medium mb-1">Following instruction:</div>
+                    <div className="text-sm text-purple-800 font-mono">
+                      1. Generate HTML with slide structure
+                    </div>
+                  </div>
+
+                  {/* Show the model generating content */}
+                  <div className="p-4 bg-white rounded-lg border border-gray-200 shadow-sm">
+                    <div className="flex items-center gap-2 mb-3">
+                      <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+                      <span className="text-sm text-gray-500">Model generating content...</span>
+                    </div>
+                    <div className="text-sm text-gray-400 mb-2">User's request: "water cycle" → HTML structure</div>
+                    <pre className="text-xs bg-gray-50 p-3 rounded border border-gray-100 overflow-x-auto font-mono text-gray-700 max-h-64 overflow-y-auto">
+{generatedHtmlContent}
+                    </pre>
+                  </div>
+
+                  {/* Tool call to write the file */}
+                  <ToolCallDisplay toolCall={toolCallWrite} isVisible={true} />
+                </motion.div>
               )}
 
               {step.phase === 'tool-call-execute' && (

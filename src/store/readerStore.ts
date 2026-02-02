@@ -10,7 +10,7 @@ export interface Highlight {
 }
 
 interface ReaderSettings {
-  fontSize: 'sm' | 'base' | 'lg' | 'xl'
+  fontSize: 'sm' | 'base' | 'lg' | 'xl' | '2xl'
   lineHeight: 'tight' | 'normal' | 'relaxed' | 'loose'
   contentWidth: 'sm' | 'md' | 'lg' | 'full'
 }
@@ -38,7 +38,7 @@ export const useReaderStore = create<ReaderState>()(
       readSections: [],
       bookmarks: [],
       settings: {
-        fontSize: 'base',
+        fontSize: 'xl',
         lineHeight: 'relaxed',
         contentWidth: 'md',
       },

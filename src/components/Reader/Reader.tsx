@@ -209,6 +209,7 @@ export function Reader() {
     base: 'text-base',
     lg: 'text-lg',
     xl: 'text-xl',
+    '2xl': 'text-2xl',
   }[settings.fontSize]
 
   // Line height class
@@ -302,86 +303,121 @@ export function Reader() {
           <div className="flex-1 overflow-y-auto p-4">
             {sidebarTab === 'contents' && (
               <nav className="space-y-0.5">
-                {articleSections.map((section) => {
-                  const isCurrent = section.id === activeSectionId
-                  const sectionIsRead = readSections.includes(section.id)
-                  const sectionIsBookmarked = bookmarks.includes(section.id)
-                  const headings = sectionHeadings.get(section.id) || []
-                  const hasSubsections = headings.length > 0
-                  const isExpanded = expandedSections.has(section.id)
+                {articleSections
+                  .filter((section) => !section.parentId) // Only render top-level sections
+                  .map((section) => {
+                    const isCurrent = section.id === activeSectionId
+                    const sectionIsRead = readSections.includes(section.id)
+                    const sectionIsBookmarked = bookmarks.includes(section.id)
+                    const headings = sectionHeadings.get(section.id) || []
+                    // Get child sections (sections with this section as parent)
+                    const childSections = articleSections.filter((s) => s.parentId === section.id)
+                    const hasSubsections = headings.length > 0 || childSections.length > 0
+                    const isExpanded = expandedSections.has(section.id)
 
-                  return (
-                    <div key={section.id}>
-                      <div className="flex items-center">
-                        {/* Expand/collapse button - fixed width container for alignment */}
-                        <div className="w-6 flex-shrink-0 flex items-center justify-center">
-                          {hasSubsections ? (
-                            <button
-                              onClick={() => toggleSectionExpanded(section.id)}
-                              className="p-0.5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
-                            >
-                              <ChevronDown
+                    return (
+                      <div key={section.id}>
+                        <div className="flex items-center">
+                          {/* Expand/collapse button - fixed width container for alignment */}
+                          <div className="w-6 flex-shrink-0 flex items-center justify-center">
+                            {hasSubsections ? (
+                              <button
+                                onClick={() => toggleSectionExpanded(section.id)}
+                                className="p-0.5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                              >
+                                <ChevronDown
+                                  className={cn(
+                                    'w-4 h-4 transition-transform',
+                                    !isExpanded && '-rotate-90'
+                                  )}
+                                />
+                              </button>
+                            ) : null}
+                          </div>
+
+                          {/* Section button */}
+                          <button
+                            onClick={() => setActiveSection(section.id)}
+                            className={cn(
+                              'flex-1 flex items-center gap-2 px-2 py-1.5 rounded-lg text-sm text-left transition-colors',
+                              isCurrent
+                                ? 'bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300'
+                                : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800'
+                            )}
+                          >
+                            {sectionIsRead ? (
+                              <CheckCircle className="w-3.5 h-3.5 text-green-500 flex-shrink-0" />
+                            ) : (
+                              <Circle className="w-3.5 h-3.5 text-gray-300 dark:text-gray-600 flex-shrink-0" />
+                            )}
+                            <span className="flex-1 text-sm font-medium leading-snug">{section.title}</span>
+                            {sectionIsBookmarked && (
+                              <BookmarkCheck className="w-3.5 h-3.5 text-yellow-500 flex-shrink-0" />
+                            )}
+                          </button>
+                        </div>
+
+                        {/* Subsections (headings and child sections) */}
+                        {hasSubsections && isExpanded && (
+                          <div className="ml-5 pl-2 border-l border-gray-200 dark:border-gray-700 mt-0.5 space-y-0.5">
+                            {/* Headings from content */}
+                            {headings.map((heading) => (
+                              <button
+                                key={heading.id}
+                                onClick={() => {
+                                  if (section.id !== activeSectionId) {
+                                    setActiveSection(section.id)
+                                    // Delay scroll to allow content to render
+                                    setTimeout(() => scrollToHeading(heading.id), 100)
+                                  } else {
+                                    scrollToHeading(heading.id)
+                                  }
+                                }}
                                 className={cn(
-                                  'w-4 h-4 transition-transform',
-                                  !isExpanded && '-rotate-90'
+                                  'w-full flex items-center gap-2 px-2 py-1.5 rounded text-sm text-left transition-colors',
+                                  'text-gray-600 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800',
+                                  heading.level === 3 && 'ml-2'
                                 )}
-                              />
-                            </button>
-                          ) : null}
-                        </div>
+                              >
+                                <Hash className="w-3 h-3 flex-shrink-0 opacity-50" />
+                                <span className="leading-snug">{heading.text}</span>
+                              </button>
+                            ))}
 
-                        {/* Section button */}
-                        <button
-                          onClick={() => setActiveSection(section.id)}
-                          className={cn(
-                            'flex-1 flex items-center gap-2 px-2 py-1.5 rounded-lg text-sm text-left transition-colors',
-                            isCurrent
-                              ? 'bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300'
-                              : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800'
-                          )}
-                        >
-                          {sectionIsRead ? (
-                            <CheckCircle className="w-3.5 h-3.5 text-green-500 flex-shrink-0" />
-                          ) : (
-                            <Circle className="w-3.5 h-3.5 text-gray-300 dark:text-gray-600 flex-shrink-0" />
-                          )}
-                          <span className="flex-1 text-sm font-medium leading-snug">{section.title}</span>
-                          {sectionIsBookmarked && (
-                            <BookmarkCheck className="w-3.5 h-3.5 text-yellow-500 flex-shrink-0" />
-                          )}
-                        </button>
+                            {/* Child sections */}
+                            {childSections.map((childSection) => {
+                              const childIsCurrent = childSection.id === activeSectionId
+                              const childIsRead = readSections.includes(childSection.id)
+                              const childIsBookmarked = bookmarks.includes(childSection.id)
+
+                              return (
+                                <button
+                                  key={childSection.id}
+                                  onClick={() => setActiveSection(childSection.id)}
+                                  className={cn(
+                                    'w-full flex items-center gap-2 px-2 py-1.5 rounded text-sm text-left transition-colors',
+                                    childIsCurrent
+                                      ? 'bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300'
+                                      : 'text-gray-600 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+                                  )}
+                                >
+                                  {childIsRead ? (
+                                    <CheckCircle className="w-3 h-3 text-green-500 flex-shrink-0" />
+                                  ) : (
+                                    <Circle className="w-3 h-3 text-gray-300 dark:text-gray-600 flex-shrink-0" />
+                                  )}
+                                  <span className="leading-snug">{childSection.title}</span>
+                                  {childIsBookmarked && (
+                                    <BookmarkCheck className="w-3 h-3 text-yellow-500 flex-shrink-0" />
+                                  )}
+                                </button>
+                              )
+                            })}
+                          </div>
+                        )}
                       </div>
-
-                      {/* Subsections */}
-                      {hasSubsections && isExpanded && (
-                        <div className="ml-5 pl-2 border-l border-gray-200 dark:border-gray-700 mt-0.5 space-y-0.5">
-                          {headings.map((heading) => (
-                            <button
-                              key={heading.id}
-                              onClick={() => {
-                                if (section.id !== activeSectionId) {
-                                  setActiveSection(section.id)
-                                  // Delay scroll to allow content to render
-                                  setTimeout(() => scrollToHeading(heading.id), 100)
-                                } else {
-                                  scrollToHeading(heading.id)
-                                }
-                              }}
-                              className={cn(
-                                'w-full flex items-center gap-2 px-2 py-1.5 rounded text-sm text-left transition-colors',
-                                'text-gray-600 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800',
-                                heading.level === 3 && 'ml-2'
-                              )}
-                            >
-                              <Hash className="w-3 h-3 flex-shrink-0 opacity-50" />
-                              <span className="leading-snug">{heading.text}</span>
-                            </button>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  )
-                })}
+                    )
+                  })}
               </nav>
             )}
 
