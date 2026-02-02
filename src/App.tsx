@@ -5,11 +5,12 @@ import { SimulatorPage } from '@/pages/SimulatorPage'
 import { ConceptsPage } from '@/pages/ConceptsPage'
 import { AnatomyPage } from '@/pages/AnatomyPage'
 import { BuilderPage } from '@/pages/BuilderPage'
+import { AskPage } from '@/pages/AskPage'
 import { AboutPage } from '@/pages/AboutPage'
 
 export default function App() {
   return (
-    <div className="min-h-screen bg-gray-50 text-gray-900">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 transition-colors">
       <Navigation />
       <main className="pt-14">
         <Routes>
@@ -18,6 +19,7 @@ export default function App() {
           <Route path="/concepts" element={<ConceptsPage />} />
           <Route path="/anatomy" element={<AnatomyPage />} />
           <Route path="/builder" element={<BuilderPage />} />
+          <Route path="/ask" element={<AskPage />} />
           <Route path="/about" element={<AboutPage />} />
         </Routes>
       </main>
