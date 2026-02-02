@@ -11,6 +11,7 @@ import { cn } from '@/utils/cn'
 import {
   ChevronLeft,
   ChevronRight,
+  ChevronDown,
   BookOpen,
   Highlighter,
   Settings,
@@ -19,7 +20,37 @@ import {
   Bookmark,
   BookmarkCheck,
   List,
+  Hash,
 } from 'lucide-react'
+
+// Extract headings from markdown content
+interface Heading {
+  level: number
+  text: string
+  id: string
+}
+
+function extractHeadings(content: string): Heading[] {
+  const headings: Heading[] = []
+  const lines = content.split('\n')
+
+  for (const line of lines) {
+    const match = line.match(/^(#{1,3})\s+(.+)$/)
+    if (match) {
+      const level = match[1].length
+      const text = match[2].replace(/\*\*/g, '').replace(/`/g, '')
+      const id = text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
+      headings.push({ level, text, id })
+    }
+  }
+
+  return headings
+}
+
+// Generate a slug from text for heading IDs
+function slugify(text: string): string {
+  return text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
+}
 
 // Process text to add concept links
 function processTextWithConcepts(text: string): React.ReactNode[] {
@@ -97,6 +128,42 @@ export function Reader() {
   const { prev, next } = getAdjacentSections(activeSectionId)
   const isRead = readSections.includes(activeSectionId)
   const isBookmarked = bookmarks.includes(activeSectionId)
+
+  // Track which sections are expanded in the TOC
+  const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set([activeSectionId]))
+
+  // Extract headings for each section (memoized)
+  const sectionHeadings = useMemo(() => {
+    const map = new Map<string, Heading[]>()
+    for (const section of articleSections) {
+      map.set(section.id, extractHeadings(section.content))
+    }
+    return map
+  }, [])
+
+  // Auto-expand current section
+  useEffect(() => {
+    setExpandedSections((prev) => new Set([...prev, activeSectionId]))
+  }, [activeSectionId])
+
+  const toggleSectionExpanded = (sectionId: string) => {
+    setExpandedSections((prev) => {
+      const newSet = new Set(prev)
+      if (newSet.has(sectionId)) {
+        newSet.delete(sectionId)
+      } else {
+        newSet.add(sectionId)
+      }
+      return newSet
+    })
+  }
+
+  const scrollToHeading = (headingId: string) => {
+    const element = document.getElementById(headingId)
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
+  }
 
   // Handle text selection
   const handleMouseUp = useCallback(() => {
@@ -233,33 +300,85 @@ export function Reader() {
           {/* Sidebar content */}
           <div className="flex-1 overflow-y-auto p-4">
             {sidebarTab === 'contents' && (
-              <nav className="space-y-1">
+              <nav className="space-y-0.5">
                 {articleSections.map((section) => {
                   const isCurrent = section.id === activeSectionId
                   const sectionIsRead = readSections.includes(section.id)
                   const sectionIsBookmarked = bookmarks.includes(section.id)
+                  const headings = sectionHeadings.get(section.id) || []
+                  const hasSubsections = headings.length > 0
+                  const isExpanded = expandedSections.has(section.id)
 
                   return (
-                    <button
-                      key={section.id}
-                      onClick={() => setActiveSection(section.id)}
-                      className={cn(
-                        'w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-left transition-colors',
-                        isCurrent
-                          ? 'bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300'
-                          : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800'
+                    <div key={section.id}>
+                      <div className="flex items-center">
+                        {/* Expand/collapse button */}
+                        {hasSubsections ? (
+                          <button
+                            onClick={() => toggleSectionExpanded(section.id)}
+                            className="p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                          >
+                            <ChevronDown
+                              className={cn(
+                                'w-3 h-3 transition-transform',
+                                !isExpanded && '-rotate-90'
+                              )}
+                            />
+                          </button>
+                        ) : (
+                          <div className="w-5" />
+                        )}
+
+                        {/* Section button */}
+                        <button
+                          onClick={() => setActiveSection(section.id)}
+                          className={cn(
+                            'flex-1 flex items-center gap-2 px-2 py-1.5 rounded-lg text-sm text-left transition-colors',
+                            isCurrent
+                              ? 'bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300'
+                              : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800'
+                          )}
+                        >
+                          {sectionIsRead ? (
+                            <CheckCircle className="w-3.5 h-3.5 text-green-500 flex-shrink-0" />
+                          ) : (
+                            <Circle className="w-3.5 h-3.5 text-gray-300 dark:text-gray-600 flex-shrink-0" />
+                          )}
+                          <span className="flex-1 truncate text-xs font-medium">{section.title}</span>
+                          {sectionIsBookmarked && (
+                            <BookmarkCheck className="w-3.5 h-3.5 text-yellow-500 flex-shrink-0" />
+                          )}
+                        </button>
+                      </div>
+
+                      {/* Subsections */}
+                      {hasSubsections && isExpanded && (
+                        <div className="ml-5 pl-2 border-l border-gray-200 dark:border-gray-700 mt-0.5 space-y-0.5">
+                          {headings.map((heading) => (
+                            <button
+                              key={heading.id}
+                              onClick={() => {
+                                if (section.id !== activeSectionId) {
+                                  setActiveSection(section.id)
+                                  // Delay scroll to allow content to render
+                                  setTimeout(() => scrollToHeading(heading.id), 100)
+                                } else {
+                                  scrollToHeading(heading.id)
+                                }
+                              }}
+                              className={cn(
+                                'w-full flex items-center gap-2 px-2 py-1 rounded text-xs text-left transition-colors',
+                                'text-gray-500 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800',
+                                heading.level === 3 && 'ml-2'
+                              )}
+                            >
+                              <Hash className="w-3 h-3 flex-shrink-0 opacity-50" />
+                              <span className="truncate">{heading.text}</span>
+                            </button>
+                          ))}
+                        </div>
                       )}
-                    >
-                      {sectionIsRead ? (
-                        <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
-                      ) : (
-                        <Circle className="w-4 h-4 text-gray-300 dark:text-gray-600 flex-shrink-0" />
-                      )}
-                      <span className="flex-1 truncate">{section.title}</span>
-                      {sectionIsBookmarked && (
-                        <BookmarkCheck className="w-4 h-4 text-yellow-500 flex-shrink-0" />
-                      )}
-                    </button>
+                    </div>
                   )
                 })}
               </nav>
@@ -334,6 +453,18 @@ export function Reader() {
           >
             <ReactMarkdown
               components={{
+                h1: ({ children }) => {
+                  const text = typeof children === 'string' ? children : String(children)
+                  return <h1 id={slugify(text)} className="scroll-mt-20">{children}</h1>
+                },
+                h2: ({ children }) => {
+                  const text = typeof children === 'string' ? children : String(children)
+                  return <h2 id={slugify(text)} className="scroll-mt-20">{children}</h2>
+                },
+                h3: ({ children }) => {
+                  const text = typeof children === 'string' ? children : String(children)
+                  return <h3 id={slugify(text)} className="scroll-mt-20">{children}</h3>
+                },
                 p: ({ children }) => {
                   // Process text nodes within paragraphs
                   const processedChildren = Array.isArray(children)
