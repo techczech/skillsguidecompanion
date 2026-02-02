@@ -65,8 +65,7 @@ export function LandingPage() {
           transition={{ delay: 0.2 }}
           className="text-xl text-gray-600 dark:text-gray-400 mb-8 max-w-2xl mx-auto"
         >
-          Agent Skills - How LLMs work
-          <span className="text-gray-900 dark:text-gray-200 font-medium"> (Companion to a Substack post)</span>
+          Companion to a Substack post exploring agent skills and the semantic powers of Large Language Models
         </motion.p>
 
         <motion.div
