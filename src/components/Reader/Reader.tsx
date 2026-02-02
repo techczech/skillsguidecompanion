@@ -313,22 +313,26 @@ export function Reader() {
                   return (
                     <div key={section.id}>
                       <div className="flex items-center">
-                        {/* Expand/collapse button */}
-                        {hasSubsections ? (
-                          <button
-                            onClick={() => toggleSectionExpanded(section.id)}
-                            className="p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
-                          >
+                        {/* Expand/collapse button - always reserve space for alignment */}
+                        <button
+                          onClick={() => hasSubsections && toggleSectionExpanded(section.id)}
+                          className={cn(
+                            'p-1 w-5 h-5 flex items-center justify-center',
+                            hasSubsections
+                              ? 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 cursor-pointer'
+                              : 'cursor-default'
+                          )}
+                          disabled={!hasSubsections}
+                        >
+                          {hasSubsections && (
                             <ChevronDown
                               className={cn(
                                 'w-3 h-3 transition-transform',
                                 !isExpanded && '-rotate-90'
                               )}
                             />
-                          </button>
-                        ) : (
-                          <div className="w-5" />
-                        )}
+                          )}
+                        </button>
 
                         {/* Section button */}
                         <button
