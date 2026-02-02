@@ -1,9 +1,16 @@
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { Play, Map, FolderTree, Wrench, ArrowRight, Sparkles, ExternalLink } from 'lucide-react'
+import { Play, Map, FolderTree, Wrench, ArrowRight, Sparkles, ExternalLink, BookOpen } from 'lucide-react'
 import { ProgressTracker } from '@/components/shared/ProgressTracker'
 
 const features = [
+  {
+    icon: BookOpen,
+    title: 'Interactive Article Reader',
+    description: 'Read the full article with highlighting, bookmarks, and linked concepts. Click terms to explore the concept map.',
+    link: '/reader',
+    color: 'purple',
+  },
   {
     icon: Play,
     title: 'Skill Execution Simulator',
@@ -123,6 +130,8 @@ export function LandingPage() {
                         ? 'bg-purple-100 dark:bg-purple-900/30'
                         : feature.color === 'tool'
                         ? 'bg-orange-100 dark:bg-orange-900/30'
+                        : feature.color === 'purple'
+                        ? 'bg-purple-100 dark:bg-purple-900/30'
                         : 'bg-blue-100 dark:bg-blue-900/30'
                     }`}
                   >
@@ -134,6 +143,8 @@ export function LandingPage() {
                           ? 'text-purple-600 dark:text-purple-400'
                           : feature.color === 'tool'
                           ? 'text-orange-600 dark:text-orange-400'
+                          : feature.color === 'purple'
+                          ? 'text-purple-600 dark:text-purple-400'
                           : 'text-blue-600 dark:text-blue-400'
                       }`}
                     />

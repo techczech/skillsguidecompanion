@@ -1,18 +1,23 @@
 import { useState, useRef } from 'react'
 import { useProgressStore } from '@/store/progressStore'
+import { useReaderStore } from '@/store/readerStore'
 import { cn } from '@/utils/cn'
 import { CheckCircle, Circle, Download, Upload, RotateCcw } from 'lucide-react'
+import { articleSections } from '@/data/articleContent'
 
 export function ProgressTracker() {
   const { simulatorCompleted, completedNodes, wizardCompleted, exportProgress, importProgress, resetProgress } = useProgressStore()
+  const readSections = useReaderStore((s) => s.readSections)
   const [showActions, setShowActions] = useState(false)
   const [importMessage, setImportMessage] = useState<string | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
+  const articleProgress = readSections.length >= Math.ceil(articleSections.length / 2)
+
   const milestones = [
+    { label: 'Read Article', completed: articleProgress },
     { label: 'Watch Simulator', completed: simulatorCompleted },
     { label: 'Explore Concepts', completed: completedNodes.length >= 4 },
-    { label: 'View Skill Files', completed: false },
     { label: 'Build a Skill', completed: wizardCompleted },
   ]
 

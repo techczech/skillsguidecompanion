@@ -115,23 +115,23 @@ export function NodeDetail({ node, onComplete }: NodeDetailProps) {
   return (
     <div className="p-4 space-y-6">
       {/* Tagline */}
-      <div className="text-sm text-purple-600 italic">"{node.tagline}"</div>
+      <div className="text-sm text-purple-600 dark:text-purple-400 italic">"{node.tagline}"</div>
 
       {/* Explanation */}
       <div>
-        <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
+        <h3 className="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-2">
           Explanation
         </h3>
-        <p className="text-sm text-gray-700 whitespace-pre-line">{node.shortExplanation}</p>
+        <p className="text-sm text-gray-700 dark:text-gray-300 whitespace-pre-line">{node.shortExplanation}</p>
       </div>
 
       {/* Example */}
       {node.example && (
         <div>
-          <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
+          <h3 className="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-2">
             Example
           </h3>
-          <div className="bg-gray-50 rounded-lg p-3 font-mono text-xs text-gray-700 whitespace-pre-line border border-gray-200">
+          <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-3 font-mono text-xs text-gray-700 dark:text-gray-300 whitespace-pre-line border border-gray-200 dark:border-gray-700">
             {node.example}
           </div>
         </div>
@@ -139,7 +139,7 @@ export function NodeDetail({ node, onComplete }: NodeDetailProps) {
 
       {/* Connections */}
       <div>
-        <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
+        <h3 className="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-2">
           Connected To
         </h3>
         <div className="space-y-2">
@@ -150,17 +150,17 @@ export function NodeDetail({ node, onComplete }: NodeDetailProps) {
             return (
               <div
                 key={i}
-                className="flex items-center gap-2 text-sm p-2 bg-gray-50 rounded-lg border border-gray-100"
+                className="flex items-center gap-2 text-sm p-2 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-100 dark:border-gray-700"
               >
-                <ArrowRight className="w-3 h-3 text-gray-400 flex-shrink-0" />
+                <ArrowRight className="w-3 h-3 text-gray-400 dark:text-gray-500 flex-shrink-0" />
                 <div className="flex-1">
                   <div className="flex items-center gap-2">
-                    <span className="text-gray-800">{targetNode?.title}</span>
+                    <span className="text-gray-800 dark:text-gray-200">{targetNode?.title}</span>
                     {isTargetCompleted && (
                       <CheckCircle className="w-3 h-3 text-green-500" />
                     )}
                   </div>
-                  <span className="text-xs text-gray-500">{conn.relationship}</span>
+                  <span className="text-xs text-gray-500 dark:text-gray-400">{conn.relationship}</span>
                 </div>
               </div>
             )

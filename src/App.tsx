@@ -7,6 +7,7 @@ import { AnatomyPage } from '@/pages/AnatomyPage'
 import { BuilderPage } from '@/pages/BuilderPage'
 import { AskPage } from '@/pages/AskPage'
 import { AboutPage } from '@/pages/AboutPage'
+import { ReaderPage } from '@/pages/ReaderPage'
 
 export default function App() {
   return (
@@ -20,6 +21,7 @@ export default function App() {
           <Route path="/anatomy" element={<AnatomyPage />} />
           <Route path="/builder" element={<BuilderPage />} />
           <Route path="/ask" element={<AskPage />} />
+          <Route path="/reader" element={<ReaderPage />} />
           <Route path="/about" element={<AboutPage />} />
         </Routes>
       </main>
