@@ -1,5 +1,6 @@
 import { AbsoluteFill, Sequence } from 'remotion'
 import { SCENES } from '../../utils/timing'
+import { TitleScene } from './sequences/TitleScene'
 import { TheProblem } from './sequences/TheProblem'
 import { TheLimit } from './sequences/TheLimit'
 import { TheIdea } from './sequences/TheIdea'
@@ -12,7 +13,12 @@ import { CallToAction } from './sequences/CallToAction'
 export function SkillsExplainer() {
   return (
     <AbsoluteFill style={{ backgroundColor: '#f3f4f6' }}>
-      {/* Scene 1: The Problem (0:00-0:15) */}
+      {/* Title Scene (0:00-0:05) */}
+      <Sequence from={SCENES.title.start} durationInFrames={SCENES.title.duration}>
+        <TitleScene />
+      </Sequence>
+
+      {/* Scene 1: The Problem (0:05-0:20) */}
       <Sequence from={SCENES.theProblem.start} durationInFrames={SCENES.theProblem.duration}>
         <TheProblem />
       </Sequence>

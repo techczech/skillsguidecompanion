@@ -1,28 +1,30 @@
 export const FPS = 30
-export const TOTAL_DURATION_SECONDS = 165 // 2:45
+export const TOTAL_DURATION_SECONDS = 170 // 2:50 (added 5s title)
 
 // Scene timings in seconds
 export const SCENE_TIMES = {
-  theProblem: { start: 0, end: 15 },
-  theLimit: { start: 15, end: 30 },
-  theIdea: { start: 30, end: 50 },
-  theDemo: { start: 50, end: 80 },
-  theMagic: { start: 80, end: 110 },
-  theScripts: { start: 110, end: 130 },
-  theReveal: { start: 130, end: 150 },
-  callToAction: { start: 150, end: 165 },
+  title: { start: 0, end: 5 },
+  theProblem: { start: 5, end: 20 },
+  theLimit: { start: 20, end: 35 },
+  theIdea: { start: 35, end: 55 },
+  theDemo: { start: 55, end: 85 },
+  theMagic: { start: 85, end: 115 },
+  theScripts: { start: 115, end: 135 },
+  theReveal: { start: 135, end: 155 },
+  callToAction: { start: 155, end: 170 },
 } as const
 
 // Scene timings in frames
 export const SCENES = {
-  theProblem: { start: 0, end: 15 * FPS, duration: 15 * FPS },
-  theLimit: { start: 15 * FPS, end: 30 * FPS, duration: 15 * FPS },
-  theIdea: { start: 30 * FPS, end: 50 * FPS, duration: 20 * FPS },
-  theDemo: { start: 50 * FPS, end: 80 * FPS, duration: 30 * FPS },
-  theMagic: { start: 80 * FPS, end: 110 * FPS, duration: 30 * FPS },
-  theScripts: { start: 110 * FPS, end: 130 * FPS, duration: 20 * FPS },
-  theReveal: { start: 130 * FPS, end: 150 * FPS, duration: 20 * FPS },
-  callToAction: { start: 150 * FPS, end: 165 * FPS, duration: 15 * FPS },
+  title: { start: 0, end: 5 * FPS, duration: 5 * FPS },
+  theProblem: { start: 5 * FPS, end: 20 * FPS, duration: 15 * FPS },
+  theLimit: { start: 20 * FPS, end: 35 * FPS, duration: 15 * FPS },
+  theIdea: { start: 35 * FPS, end: 55 * FPS, duration: 20 * FPS },
+  theDemo: { start: 55 * FPS, end: 85 * FPS, duration: 30 * FPS },
+  theMagic: { start: 85 * FPS, end: 115 * FPS, duration: 30 * FPS },
+  theScripts: { start: 115 * FPS, end: 135 * FPS, duration: 20 * FPS },
+  theReveal: { start: 135 * FPS, end: 155 * FPS, duration: 20 * FPS },
+  callToAction: { start: 155 * FPS, end: 170 * FPS, duration: 15 * FPS },
 } as const
 
 export function secondsToFrames(seconds: number): number {

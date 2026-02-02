@@ -67,7 +67,7 @@ And even if you don't do that, understanding how Skills work will help you under
   },
   {
     id: 'history-mcp',
-    title: 'A quick history lesson: MCP',
+    title: 'A quick history lesson: MCP[^4]',
     order: 3,
     content: `In late 2024, Anthropic released something called **Model Context Protocol** (usually referred to as **MCP**) and people looked at it and said "oh, that's nice". Then over the holidays everybody realized that not only is MCP "nice", it's the way to give Large Language Models access to complicated external systems with complicated APIs.
 
@@ -176,7 +176,7 @@ description: A clear description of what this skill does and when to use it
 
 If that sounds kind of like a custom GPT to you, you're not wrong. Custom GPT is a prompt that can refer to some files somewhere and possibly execute some scripts.
 
-The revolutionary thing about Skills is that they are infinitely more flexible than Custom GPTs and also significantly more reliable.
+The revolutionary thing about Skills is that they are infinitely more flexible than Custom GPTs and also significantly more reliable.[^5]
 
 Don't just take my word for it. Everybody seems to agree. And I mean EVERYBODY!
 
@@ -190,9 +190,9 @@ Want to share a Skill with somebody else? Easy, just send them a .zip file with 
     order: 6,
     content: `### System prompt updates
 
-This is the beauty of Skills. If your chatbot or another tool using LLMs supports Skills, all it has to do is add a list of the available Skills and their brief descriptions to its **system prompt**. The model will then always know this is an option.
+This is the beauty of Skills. If your chatbot or another tool using LLMs supports Skills, all it has to do is add a list of the available Skills and their brief descriptions to its **system prompt**. The model will then always know this is an option.[^6]
 
-**System prompts** are already very long - the one Anthropic use for Claude is about 3,000 words - and LLMs have a limit to how much text they can look at once before they forget everything. This limit is called a **context window** and context windows have hard limits (more about which later). So adding too much text to the system prompt would mean that the LLM would have less space for chatting with you and also be more likely to go off-piste in the chats.
+**System prompts** are already very long - the one Anthropic use for Claude is about 3,000 words - and LLMs have a limit to how much text they can look at once before they forget everything. This limit is called a **context window** and context windows have hard limits (more about which later). So adding too much text to the system prompt would mean that the LLM would have less space for chatting with you and also be more likely to go off-piste in the chats.[^7]
 
 Here, again is the beauty of Skills. The description of what the Skill does is very short - as little as 20-50 words but not more than 1,024 characters (or about 150-200 words). This means that you can keep a lot of Skills mentioned in your System prompt and the LLM will still be able to pay proper attention to the chat you're having - only with the idea that it can use one of the Skills when needed.
 
@@ -278,7 +278,7 @@ But maybe you just thought an LLM was the thing that responds to you in ChatGPT 
 
 Yes, we often say things like "the model searched" or "the model used a tool" or "the model looked up information". None of that is accurate.
 
-The LLM is basically a blob of numbers on a server somewhere that some software uses to calculate the next word (or more accurately token) to add to the end of any text that it is given. Some people say this means it just "fills in the blank" or is really "just a glorified autocomplete". Yes, that is sort of technically accurate but it obscures more than it reveals. The word "autocomplete" implies that this is a dumb and mechanical process - we all know how bad the next word prediction is on our phone. That is because the autocompletion on your phone is based on word frequencies.
+The LLM is basically a blob of numbers on a server somewhere that some software uses to calculate the next word (or more accurately token) to add to the end of any text that it is given. Some people say this means it just "fills in the blank" or is really "just a glorified autocomplete". Yes, that is sort of technically accurate but it obscures more than it reveals. The word "autocomplete" implies that this is a dumb and mechanical process - we all know how bad the next word prediction is on our phone. That is because the autocompletion on your phone is based on word frequencies.[^8]
 
 But the numbers inside the model are NOT frequencies. They are vectors that represent meaningful relationships between concepts. There's much more to it but what it adds up to is something that is equivalent to the models having a "**deep semantic understanding of text**". And a model can use that understanding to choose the next word to fit into the semantic puzzle. And then it adds another one. And another one. Until the text is complete. The model may not "really understand" in exactly the same a human does but the effect is that it works as if it did.
 
@@ -377,11 +377,11 @@ Or imagine you do a search on Google and the search finds 200 results. If each o
 
 So how do LLMs handle this? They don't. They just happily keep generating text based on what they "see" unaware of anything outside the context window. Remember, they have no memory of anything outside of what they see in their context window at the moment of generation.
 
-Instead, the system running the LLM keeps track of the context window and when it's close to filling up, it starts a process that will ask the LLM to summarize the context so far, throw everything else away (or move it to a file) and continue the process just based on that summary.
+Instead, the system running the LLM keeps track of the context window and when it's close to filling up, it starts a process that will ask the LLM to summarize the context so far, throw everything else away (or move it to a file) and continue the process just based on that summary.[^1]
 
 I know. That's a recipe for forgetting important information, you're thinking. And you're right. That's one of the big unsolved problems of Large Language Models today. That's why it's always a good idea when working on a large project to ask the LLM to keep a close log of everything it's done.
 
-Skills don't exactly solve the context window problem but they offer a very elegant and effective workaround. Using the **tool calling** and **instruction following** capabilities of the LLM, they simply rely on the LLM to be able to read the short notice that the skill is available in the **system prompt**, write a tool call to open the skill file, read the contents of the \`SKILL.md\` file and follow instructions. The \`SKILL.md\` may in turn instruct the model to make a series of tool calls and run scripts as needed.
+Skills don't exactly solve the context window problem[^2] but they offer a very elegant and effective workaround. Using the **tool calling** and **instruction following** capabilities of the LLM, they simply rely on the LLM to be able to read the short notice that the skill is available in the **system prompt**, write a tool call to open the skill file[^3], read the contents of the \`SKILL.md\` file and follow instructions. The \`SKILL.md\` may in turn instruct the model to make a series of tool calls and run scripts as needed.
 
 This is both simple and effective.`,
   },
@@ -402,7 +402,7 @@ There are other ways of dealing with very large knowledge bases (that come with 
   },
   {
     id: 'conclusion',
-    title: 'Go Skills!',
+    title: 'Go Skills![^9]',
     order: 14,
     content: `You don't need to be a programmer to understand Skills. Go to Anthropic's Skills repository and open any Skill folder. Read the SKILL.md file. Look at what's in references. If there's a scripts folder, glance at the file names.
 

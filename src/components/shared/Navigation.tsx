@@ -1,10 +1,11 @@
 import { NavLink } from 'react-router-dom'
 import { cn } from '@/utils/cn'
-import { Play, Map, FolderTree, Wrench, Info, Home, MessageCircle, Sun, Moon, BookOpen } from 'lucide-react'
+import { Play, Map, FolderTree, Wrench, Info, Home, MessageCircle, Sun, Moon, BookOpen, Film } from 'lucide-react'
 import { useThemeStore } from '@/store/themeStore'
 
 const navItems = [
   { to: '/', label: 'Home', icon: Home },
+  { to: '/video', label: 'Video', icon: Film },
   { to: '/reader', label: 'Read Article', icon: BookOpen },
   { to: '/simulator', label: 'Simulator', icon: Play },
   { to: '/concepts', label: 'Concept Map', icon: Map },

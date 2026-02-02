@@ -1,5 +1,6 @@
 import { Composition } from 'remotion'
 import { SkillsExplainer } from './compositions/SkillsExplainer'
+import { TitleScene } from './compositions/SkillsExplainer/sequences/TitleScene'
 import { TheProblem } from './compositions/SkillsExplainer/sequences/TheProblem'
 import { TheLimit } from './compositions/SkillsExplainer/sequences/TheLimit'
 import { TheIdea } from './compositions/SkillsExplainer/sequences/TheIdea'
@@ -26,6 +27,15 @@ export function RemotionRoot() {
       />
 
       {/* Individual scene compositions for preview/testing */}
+      <Composition
+        id="TitleScene"
+        component={TitleScene}
+        durationInFrames={SCENES.title.duration}
+        fps={FPS}
+        width={1920}
+        height={1080}
+      />
+
       <Composition
         id="TheProblem"
         component={TheProblem}

@@ -1,9 +1,16 @@
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { Play, Map, FolderTree, Wrench, ArrowRight, Sparkles, BookOpen } from 'lucide-react'
+import { Play, Map, FolderTree, Wrench, ArrowRight, Sparkles, BookOpen, Film } from 'lucide-react'
 import { ProgressTracker } from '@/components/shared/ProgressTracker'
 
 const features = [
+  {
+    icon: Film,
+    title: 'Watch the Explainer Video',
+    description: 'A 2:50 animated video explaining how LLM Skills work - from the problem to the solution.',
+    link: '/video',
+    color: 'video',
+  },
   {
     icon: BookOpen,
     title: 'Interactive Article Reader',
@@ -122,7 +129,9 @@ export function LandingPage() {
                 <div className="flex items-start gap-4">
                   <div
                     className={`p-3 rounded-lg ${
-                      feature.color === 'model'
+                      feature.color === 'video'
+                        ? 'bg-rose-100 dark:bg-rose-900/30'
+                        : feature.color === 'model'
                         ? 'bg-green-100 dark:bg-green-900/30'
                         : feature.color === 'system'
                         ? 'bg-purple-100 dark:bg-purple-900/30'
@@ -135,7 +144,9 @@ export function LandingPage() {
                   >
                     <feature.icon
                       className={`w-6 h-6 ${
-                        feature.color === 'model'
+                        feature.color === 'video'
+                          ? 'text-rose-600 dark:text-rose-400'
+                          : feature.color === 'model'
                           ? 'text-green-600 dark:text-green-400'
                           : feature.color === 'system'
                           ? 'text-purple-600 dark:text-purple-400'

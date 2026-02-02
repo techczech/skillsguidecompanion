@@ -1,17 +1,19 @@
 import { Player } from '@remotion/player'
+import { Link } from 'react-router-dom'
 import { SkillsExplainer } from '@/remotion/compositions/SkillsExplainer'
 import { FPS, TOTAL_DURATION_SECONDS } from '@/remotion/utils/timing'
-import { Play, Download, Clock, Film, ChevronRight } from 'lucide-react'
+import { Clock, Film, ArrowLeft, BookOpen, Cpu, Wrench } from 'lucide-react'
 
 const scenes = [
-  { id: 'theProblem', name: 'The Problem', time: '0:00', description: 'AI getting confused on long tasks' },
-  { id: 'theLimit', name: 'The Limit', time: '0:15', description: 'Context window filling up' },
-  { id: 'theIdea', name: 'The Idea', time: '0:30', description: 'Introducing Skills concept' },
-  { id: 'theDemo', name: 'The Demo', time: '0:50', description: 'Skill execution walkthrough' },
-  { id: 'theMagic', name: 'The Magic', time: '1:20', description: 'Inside SKILL.md' },
-  { id: 'theScripts', name: 'The Scripts', time: '1:50', description: 'Pre-written scripts' },
-  { id: 'theReveal', name: 'The Reveal', time: '2:10', description: 'Complete picture' },
-  { id: 'callToAction', name: 'Call to Action', time: '2:30', description: 'Next steps' },
+  { id: 'title', name: 'Title', time: '0:00', description: 'LLM Skills introduction' },
+  { id: 'theProblem', name: 'The Problem', time: '0:05', description: 'AI getting confused on long tasks' },
+  { id: 'theLimit', name: 'The Limit', time: '0:20', description: 'Context window filling up' },
+  { id: 'theIdea', name: 'The Idea', time: '0:35', description: 'Introducing Skills concept' },
+  { id: 'theDemo', name: 'The Demo', time: '0:55', description: 'Skill execution walkthrough' },
+  { id: 'theMagic', name: 'The Magic', time: '1:25', description: 'Inside SKILL.md' },
+  { id: 'theScripts', name: 'The Scripts', time: '1:55', description: 'Pre-written scripts' },
+  { id: 'theReveal', name: 'The Reveal', time: '2:15', description: 'Complete picture' },
+  { id: 'callToAction', name: 'Call to Action', time: '2:35', description: 'Next steps' },
 ]
 
 export function VideoPage() {
@@ -29,11 +31,20 @@ export function VideoPage() {
       <div className="bg-gray-800 border-b border-gray-700">
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-bold">Skills Explainer Video</h1>
-              <p className="text-gray-400 text-sm mt-1">
-                A {formatTime(TOTAL_DURATION_SECONDS)} animated explanation of how LLM Skills work
-              </p>
+            <div className="flex items-center gap-4">
+              <Link
+                to="/"
+                className="p-2 rounded-lg hover:bg-gray-700 transition-colors"
+                title="Back to Home"
+              >
+                <ArrowLeft className="w-5 h-5" />
+              </Link>
+              <div>
+                <h1 className="text-2xl font-bold">Skills Explainer Video</h1>
+                <p className="text-gray-400 text-sm mt-1">
+                  A {formatTime(TOTAL_DURATION_SECONDS)} animated explanation of how LLM Skills work
+                </p>
+              </div>
             </div>
             <div className="flex items-center gap-3">
               <div className="flex items-center gap-2 text-gray-400 text-sm">
@@ -69,27 +80,29 @@ export function VideoPage() {
               />
             </div>
 
-            {/* Actions */}
+            {/* Quick links */}
             <div className="mt-6 flex flex-wrap gap-4">
-              <div className="bg-gray-800 rounded-lg px-4 py-3 flex items-center gap-3">
-                <Download className="w-5 h-5 text-green-400" />
+              <Link
+                to="/reader"
+                className="bg-gray-800 rounded-lg px-4 py-3 flex items-center gap-3 hover:bg-gray-700 transition-colors"
+              >
+                <BookOpen className="w-5 h-5 text-green-400" />
                 <div>
-                  <p className="text-sm font-medium">Export Video</p>
-                  <p className="text-xs text-gray-400">
-                    Run <code className="bg-gray-700 px-1 rounded">npm run remotion:render</code>
-                  </p>
+                  <p className="text-sm font-medium">Read the Full Article</p>
+                  <p className="text-xs text-gray-400">Deep dive into LLM Skills</p>
                 </div>
-              </div>
+              </Link>
 
-              <div className="bg-gray-800 rounded-lg px-4 py-3 flex items-center gap-3">
-                <Play className="w-5 h-5 text-purple-400" />
+              <Link
+                to="/simulator"
+                className="bg-gray-800 rounded-lg px-4 py-3 flex items-center gap-3 hover:bg-gray-700 transition-colors"
+              >
+                <Cpu className="w-5 h-5 text-purple-400" />
                 <div>
-                  <p className="text-sm font-medium">Remotion Studio</p>
-                  <p className="text-xs text-gray-400">
-                    Run <code className="bg-gray-700 px-1 rounded">npm run remotion:studio</code>
-                  </p>
+                  <p className="text-sm font-medium">Interactive Simulator</p>
+                  <p className="text-xs text-gray-400">Step through a skill execution</p>
                 </div>
-              </div>
+              </Link>
             </div>
 
             {/* About section */}
@@ -100,18 +113,14 @@ export function VideoPage() {
                 they solve (context window limits) to the elegant solution (folders with text files).
                 The video is built with Remotion and can be exported as an MP4 for sharing.
               </p>
-              <div className="mt-4 grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+              <div className="mt-4 grid grid-cols-3 gap-4 text-center">
                 <div className="bg-gray-700 rounded-lg p-3">
-                  <div className="text-2xl font-bold text-green-400">8</div>
+                  <div className="text-2xl font-bold text-green-400">9</div>
                   <div className="text-xs text-gray-400">Scenes</div>
                 </div>
                 <div className="bg-gray-700 rounded-lg p-3">
-                  <div className="text-2xl font-bold text-blue-400">30</div>
-                  <div className="text-xs text-gray-400">FPS</div>
-                </div>
-                <div className="bg-gray-700 rounded-lg p-3">
-                  <div className="text-2xl font-bold text-purple-400">{totalFrames}</div>
-                  <div className="text-xs text-gray-400">Total Frames</div>
+                  <div className="text-2xl font-bold text-purple-400">{formatTime(TOTAL_DURATION_SECONDS)}</div>
+                  <div className="text-xs text-gray-400">Duration</div>
                 </div>
                 <div className="bg-gray-700 rounded-lg p-3">
                   <div className="text-2xl font-bold text-amber-400">1080p</div>
@@ -150,33 +159,33 @@ export function VideoPage() {
               </div>
             </div>
 
-            {/* Quick actions */}
+            {/* Explore more */}
             <div className="mt-4 bg-gray-800 rounded-xl p-4">
               <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wide mb-4">
-                Quick Actions
+                Explore More
               </h3>
               <div className="space-y-2">
-                <a
-                  href="/simulator"
+                <Link
+                  to="/simulator"
                   className="flex items-center gap-2 p-3 rounded-lg hover:bg-gray-700 transition-colors"
                 >
-                  <ChevronRight className="w-4 h-4 text-green-400" />
+                  <Cpu className="w-4 h-4 text-green-400" />
                   <span className="text-sm">Interactive Simulator</span>
-                </a>
-                <a
-                  href="/anatomy"
+                </Link>
+                <Link
+                  to="/anatomy"
                   className="flex items-center gap-2 p-3 rounded-lg hover:bg-gray-700 transition-colors"
                 >
-                  <ChevronRight className="w-4 h-4 text-purple-400" />
+                  <Wrench className="w-4 h-4 text-purple-400" />
                   <span className="text-sm">Skill Anatomy Explorer</span>
-                </a>
-                <a
-                  href="/builder"
+                </Link>
+                <Link
+                  to="/reader"
                   className="flex items-center gap-2 p-3 rounded-lg hover:bg-gray-700 transition-colors"
                 >
-                  <ChevronRight className="w-4 h-4 text-blue-400" />
-                  <span className="text-sm">Build Your Own Skill</span>
-                </a>
+                  <BookOpen className="w-4 h-4 text-blue-400" />
+                  <span className="text-sm">Read the Article</span>
+                </Link>
               </div>
             </div>
           </div>
