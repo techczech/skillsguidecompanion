@@ -21,6 +21,7 @@ import {
   BookmarkCheck,
   List,
   Hash,
+  ExternalLink,
 } from 'lucide-react'
 
 // Extract headings from markdown content
@@ -406,6 +407,27 @@ export function Reader() {
 
       {/* Main content */}
       <main className="flex-1 overflow-y-auto bg-gray-50 dark:bg-gray-950">
+        {/* Article title banner */}
+        <div className="bg-gradient-to-r from-purple-600 to-purple-700 dark:from-purple-800 dark:to-purple-900 text-white">
+          <div className={cn('mx-auto px-6 py-6', contentWidthClass)}>
+            <p className="text-purple-200 dark:text-purple-300 text-sm mb-2">
+              Interactive reading experience
+            </p>
+            <h1 className="text-2xl md:text-3xl font-bold mb-3">
+              We've been using AI wrong: Agent Skills and the Semantic Powers of LLMs
+            </h1>
+            <a
+              href="https://schemasandpropositions.substack.com/p/weve-been-using-ai-wrong-agent-skills"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 text-sm text-purple-200 hover:text-white transition-colors"
+            >
+              <ExternalLink className="w-4 h-4" />
+              Read the original on Substack
+            </a>
+          </div>
+        </div>
+
         <div className={cn('mx-auto px-6 py-8', contentWidthClass)}>
           {/* Section header */}
           <header className="mb-8">
