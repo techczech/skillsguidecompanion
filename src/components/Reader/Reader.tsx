@@ -345,7 +345,7 @@ export function Reader() {
                           ) : (
                             <Circle className="w-3.5 h-3.5 text-gray-300 dark:text-gray-600 flex-shrink-0" />
                           )}
-                          <span className="flex-1 truncate text-xs font-medium">{section.title}</span>
+                          <span className="flex-1 text-sm font-medium leading-snug">{section.title}</span>
                           {sectionIsBookmarked && (
                             <BookmarkCheck className="w-3.5 h-3.5 text-yellow-500 flex-shrink-0" />
                           )}
@@ -368,13 +368,13 @@ export function Reader() {
                                 }
                               }}
                               className={cn(
-                                'w-full flex items-center gap-2 px-2 py-1 rounded text-xs text-left transition-colors',
-                                'text-gray-500 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800',
+                                'w-full flex items-center gap-2 px-2 py-1.5 rounded text-sm text-left transition-colors',
+                                'text-gray-600 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800',
                                 heading.level === 3 && 'ml-2'
                               )}
                             >
                               <Hash className="w-3 h-3 flex-shrink-0 opacity-50" />
-                              <span className="truncate">{heading.text}</span>
+                              <span className="leading-snug">{heading.text}</span>
                             </button>
                           ))}
                         </div>
