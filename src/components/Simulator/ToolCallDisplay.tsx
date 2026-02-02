@@ -26,16 +26,16 @@ export function ToolCallDisplay({
       animate={{ opacity: isVisible ? 1 : 0, scale: isVisible ? 1 : 0.95 }}
       className={cn('', className)}
     >
-      <div className="bg-gray-900 rounded-lg border border-tool/30 overflow-hidden glow-tool">
-        <div className="px-3 py-2 bg-tool/10 border-b border-tool/30 flex items-center gap-2">
-          <Terminal className="w-4 h-4 text-tool" />
-          <span className="text-sm font-medium text-tool">Tool Call</span>
+      <div className="bg-white rounded-lg border border-orange-200 overflow-hidden shadow-sm shadow-orange-100">
+        <div className="px-3 py-2 bg-orange-50 border-b border-orange-200 flex items-center gap-2">
+          <Terminal className="w-4 h-4 text-orange-600" />
+          <span className="text-sm font-medium text-orange-700">Tool Call</span>
           {showAnimation && (
             <motion.div
               initial={{ opacity: 0, x: -10 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.3 }}
-              className="ml-auto flex items-center gap-1 text-xs text-gray-400"
+              className="ml-auto flex items-center gap-1 text-xs text-gray-500"
             >
               <span>Model output</span>
               <ArrowRight className="w-3 h-3" />
@@ -44,7 +44,7 @@ export function ToolCallDisplay({
           )}
         </div>
 
-        <div className="p-3">
+        <div className="p-3 bg-gray-50">
           <pre className="font-mono text-sm overflow-x-auto">
             {jsonString.split('\n').map((line, i) => (
               <motion.div
@@ -64,7 +64,6 @@ export function ToolCallDisplay({
 }
 
 function formatJsonLine(line: string): React.ReactNode {
-  // Highlight JSON syntax
   const keyMatch = line.match(/^(\s*)"([^"]+)"(:)/)
   const stringMatch = line.match(/:\s*"([^"]+)"/)
 
@@ -74,12 +73,12 @@ function formatJsonLine(line: string): React.ReactNode {
     return (
       <>
         {indent}
-        <span className="text-purple-400">"{key}"</span>
-        <span className="text-gray-400">{colon}</span>
+        <span className="text-purple-600">"{key}"</span>
+        <span className="text-gray-500">{colon}</span>
         {stringMatch ? (
           <>
             {' '}
-            <span className="text-green-400">"{stringMatch[1]}"</span>
+            <span className="text-green-600">"{stringMatch[1]}"</span>
             {rest.slice(stringMatch[0].length - 1)}
           </>
         ) : (
@@ -89,5 +88,5 @@ function formatJsonLine(line: string): React.ReactNode {
     )
   }
 
-  return <span className="text-gray-300">{line}</span>
+  return <span className="text-gray-700">{line}</span>
 }

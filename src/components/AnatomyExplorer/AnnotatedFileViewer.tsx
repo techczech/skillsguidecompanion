@@ -37,11 +37,11 @@ export function AnnotatedFileViewer({
   const fileName = path.split('/').pop() || path
 
   return (
-    <div className={cn('flex flex-col h-full', className)}>
+    <div className={cn('flex flex-col h-full bg-white', className)}>
       {/* Header */}
-      <div className="flex items-center justify-between px-4 py-2 border-b border-gray-800 bg-gray-900/50">
+      <div className="flex items-center justify-between px-4 py-2 border-b border-gray-200 bg-gray-50">
         <div className="flex items-center gap-2">
-          <span className="text-sm font-medium text-gray-200">{fileName}</span>
+          <span className="text-sm font-medium text-gray-900">{fileName}</span>
           <span className="text-xs text-gray-500">{path}</span>
         </div>
 
@@ -51,8 +51,8 @@ export function AnnotatedFileViewer({
             className={cn(
               'flex items-center gap-1.5 px-2 py-1 rounded text-xs transition-colors',
               showAnnotations
-                ? 'bg-system/20 text-system'
-                : 'bg-gray-800 text-gray-400 hover:text-gray-200'
+                ? 'bg-purple-100 text-purple-700'
+                : 'bg-gray-100 text-gray-600 hover:text-gray-800'
             )}
           >
             {showAnnotations ? (
@@ -65,7 +65,7 @@ export function AnnotatedFileViewer({
 
           <button
             onClick={handleCopy}
-            className="flex items-center gap-1.5 px-2 py-1 rounded text-xs bg-gray-800 text-gray-400 hover:text-gray-200 transition-colors"
+            className="flex items-center gap-1.5 px-2 py-1 rounded text-xs bg-gray-100 text-gray-600 hover:text-gray-800 transition-colors"
           >
             {copied ? (
               <>
@@ -96,13 +96,13 @@ export function AnnotatedFileViewer({
                   key={i}
                   className={cn(
                     'flex group relative',
-                    annotation && showAnnotations && 'bg-system/5'
+                    annotation && showAnnotations && 'bg-purple-50'
                   )}
                   onMouseEnter={() => setHoveredLine(lineNum)}
                   onMouseLeave={() => setHoveredLine(null)}
                 >
                   {/* Line number */}
-                  <span className="w-10 pr-3 text-right text-gray-600 select-none flex-shrink-0 border-r border-gray-800 mr-4">
+                  <span className="w-10 pr-3 text-right text-gray-400 select-none flex-shrink-0 border-r border-gray-200 mr-4">
                     {lineNum}
                   </span>
 
@@ -112,7 +112,7 @@ export function AnnotatedFileViewer({
                   {/* Annotation indicator */}
                   {annotation && showAnnotations && (
                     <span className="ml-2 flex-shrink-0">
-                      <Info className="w-3.5 h-3.5 text-system" />
+                      <Info className="w-3.5 h-3.5 text-purple-500" />
                     </span>
                   )}
 
@@ -125,9 +125,9 @@ export function AnnotatedFileViewer({
                         exit={{ opacity: 0, x: 10 }}
                         className="absolute right-0 top-0 transform translate-x-full ml-2 z-10"
                       >
-                        <div className="bg-gray-900 border border-system/30 rounded-lg px-3 py-2 text-xs text-gray-300 max-w-xs shadow-lg">
+                        <div className="bg-white border border-purple-200 rounded-lg px-3 py-2 text-xs text-gray-700 max-w-xs shadow-lg">
                           <div className="flex items-start gap-2">
-                            <Info className="w-3 h-3 text-system flex-shrink-0 mt-0.5" />
+                            <Info className="w-3 h-3 text-purple-500 flex-shrink-0 mt-0.5" />
                             <span>{annotation}</span>
                           </div>
                         </div>
@@ -143,9 +143,9 @@ export function AnnotatedFileViewer({
 
       {/* Annotation legend */}
       {annotations.length > 0 && showAnnotations && (
-        <div className="px-4 py-2 border-t border-gray-800 bg-gray-900/30">
+        <div className="px-4 py-2 border-t border-gray-200 bg-gray-50">
           <div className="flex items-center gap-2 text-xs text-gray-500">
-            <Info className="w-3 h-3 text-system" />
+            <Info className="w-3 h-3 text-purple-500" />
             <span>Hover over highlighted lines to see explanations</span>
           </div>
         </div>
@@ -159,44 +159,44 @@ function formatLine(line: string, fileName: string): React.ReactNode {
 
   // Markdown formatting
   if (ext === 'md') {
-    if (line === '---') return <span className="text-gray-600">{line}</span>
+    if (line === '---') return <span className="text-gray-400">{line}</span>
     if (line.match(/^[a-z]+:/)) {
       const [key, ...value] = line.split(':')
       return (
         <>
-          <span className="text-purple-400">{key}</span>
+          <span className="text-purple-600">{key}</span>
           <span className="text-gray-400">:</span>
-          <span className="text-green-400">{value.join(':')}</span>
+          <span className="text-green-600">{value.join(':')}</span>
         </>
       )
     }
-    if (line.startsWith('# ')) return <span className="text-yellow-400 font-bold">{line}</span>
-    if (line.startsWith('## ')) return <span className="text-yellow-300 font-semibold">{line}</span>
-    if (line.startsWith('### ')) return <span className="text-yellow-200">{line}</span>
-    if (line.startsWith('```')) return <span className="text-pink-400">{line}</span>
+    if (line.startsWith('# ')) return <span className="text-amber-600 font-bold">{line}</span>
+    if (line.startsWith('## ')) return <span className="text-amber-500 font-semibold">{line}</span>
+    if (line.startsWith('### ')) return <span className="text-amber-500">{line}</span>
+    if (line.startsWith('```')) return <span className="text-pink-600">{line}</span>
     if (line.startsWith('- ')) {
       return (
         <>
-          <span className="text-gray-500">- </span>
-          <span className="text-gray-300">{line.slice(2)}</span>
+          <span className="text-gray-400">- </span>
+          <span className="text-gray-700">{line.slice(2)}</span>
         </>
       )
     }
-    if (line.startsWith('|')) return <span className="text-gray-400">{line}</span>
+    if (line.startsWith('|')) return <span className="text-gray-500">{line}</span>
   }
 
   // JavaScript/Python formatting
   if (ext === 'js' || ext === 'py') {
     if (line.trim().startsWith('//') || line.trim().startsWith('#')) {
-      return <span className="text-gray-500 italic">{line}</span>
+      return <span className="text-gray-400 italic">{line}</span>
     }
     if (line.includes('function') || line.includes('def ')) {
-      return <span className="text-blue-400">{line}</span>
+      return <span className="text-blue-600">{line}</span>
     }
     if (line.includes('const ') || line.includes('let ') || line.includes('var ')) {
-      return <span className="text-purple-300">{line}</span>
+      return <span className="text-purple-600">{line}</span>
     }
   }
 
-  return <span className="text-gray-300">{line}</span>
+  return <span className="text-gray-700">{line}</span>
 }

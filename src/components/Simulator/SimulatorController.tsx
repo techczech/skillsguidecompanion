@@ -36,7 +36,6 @@ export function SimulatorController() {
   const step = simulatorSteps[currentStep]
   const isLastStep = currentStep === simulatorSteps.length - 1
 
-  // Auto-play logic
   useEffect(() => {
     if (mode !== 'auto' || !isPlaying) return
 
@@ -74,7 +73,6 @@ export function SimulatorController() {
     setShowExpandable(false)
   }, [])
 
-  // Build messages for chat based on current step
   const messages = []
   if (currentStep >= 0) {
     messages.push({
@@ -91,50 +89,48 @@ export function SimulatorController() {
   }
 
   return (
-    <div className="h-full flex flex-col">
+    <div className="h-full flex flex-col bg-gray-50">
       {/* Controls bar */}
-      <div className="flex items-center justify-between px-4 py-3 border-b border-gray-800 bg-gray-900/50">
+      <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200 bg-white">
         <div className="flex items-center gap-2">
-          <span className="text-sm font-medium">{step.title}</span>
+          <span className="text-sm font-medium text-gray-900">{step.title}</span>
           <span className="text-xs text-gray-500">
             {currentStep + 1}/{simulatorSteps.length}
           </span>
         </div>
 
         <div className="flex items-center gap-1">
-          {/* Mode toggle */}
           <button
             onClick={() => setMode(mode === 'auto' ? 'step' : 'auto')}
             className={cn(
               'px-2 py-1 text-xs rounded transition-colors',
-              mode === 'auto' ? 'bg-model/20 text-model' : 'bg-gray-800 text-gray-400'
+              mode === 'auto' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'
             )}
           >
             {mode === 'auto' ? 'Auto' : 'Step'}
           </button>
 
-          <div className="w-px h-4 bg-gray-700 mx-1" />
+          <div className="w-px h-4 bg-gray-200 mx-1" />
 
-          {/* Playback controls */}
           <button
             onClick={handlePrev}
             disabled={currentStep === 0}
-            className="p-1.5 rounded hover:bg-gray-800 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+            className="p-1.5 rounded hover:bg-gray-100 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
           >
-            <SkipBack className="w-4 h-4" />
+            <SkipBack className="w-4 h-4 text-gray-600" />
           </button>
 
           {mode === 'auto' ? (
             <button
               onClick={() => setIsPlaying(!isPlaying)}
-              className="p-1.5 rounded hover:bg-gray-800 transition-colors"
+              className="p-1.5 rounded hover:bg-gray-100 transition-colors"
             >
-              {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
+              {isPlaying ? <Pause className="w-4 h-4 text-gray-600" /> : <Play className="w-4 h-4 text-gray-600" />}
             </button>
           ) : (
             <button
               onClick={handleNext}
-              className="p-1.5 rounded bg-model/20 text-model hover:bg-model/30 transition-colors"
+              className="p-1.5 rounded bg-green-100 text-green-700 hover:bg-green-200 transition-colors"
             >
               <ChevronRight className="w-4 h-4" />
             </button>
@@ -143,26 +139,26 @@ export function SimulatorController() {
           <button
             onClick={handleNext}
             disabled={isLastStep}
-            className="p-1.5 rounded hover:bg-gray-800 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+            className="p-1.5 rounded hover:bg-gray-100 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
           >
-            <SkipForward className="w-4 h-4" />
+            <SkipForward className="w-4 h-4 text-gray-600" />
           </button>
 
-          <div className="w-px h-4 bg-gray-700 mx-1" />
+          <div className="w-px h-4 bg-gray-200 mx-1" />
 
           <button
             onClick={handleReset}
-            className="p-1.5 rounded hover:bg-gray-800 transition-colors"
+            className="p-1.5 rounded hover:bg-gray-100 transition-colors"
           >
-            <RotateCcw className="w-4 h-4" />
+            <RotateCcw className="w-4 h-4 text-gray-600" />
           </button>
         </div>
       </div>
 
       {/* Progress bar */}
-      <div className="h-1 bg-gray-800">
+      <div className="h-1 bg-gray-200">
         <motion.div
-          className="h-full bg-model"
+          className="h-full bg-green-500"
           initial={{ width: 0 }}
           animate={{ width: `${((currentStep + 1) / simulatorSteps.length) * 100}%` }}
         />
@@ -171,7 +167,7 @@ export function SimulatorController() {
       {/* Main content area */}
       <div className="flex-1 flex overflow-hidden">
         {/* Left: Chat interface */}
-        <div className="w-1/2 border-r border-gray-800">
+        <div className="w-1/2 border-r border-gray-200">
           <ChatInterface
             messages={messages}
             isThinking={step.phase === 'thinking'}
@@ -180,10 +176,9 @@ export function SimulatorController() {
         </div>
 
         {/* Right: Behind the scenes */}
-        <div className="w-1/2 flex flex-col overflow-hidden">
+        <div className="w-1/2 flex flex-col overflow-hidden bg-gray-100">
           <div className="flex-1 overflow-y-auto p-4 space-y-4">
             <AnimatePresence mode="wait">
-              {/* System prompt phase */}
               {(step.phase === 'system-prompt' || step.phase === 'setup') && (
                 <SystemPromptPanel
                   key="system-prompt"
@@ -193,39 +188,36 @@ export function SimulatorController() {
                 />
               )}
 
-              {/* Thinking phase */}
               {step.phase === 'thinking' && (
                 <motion.div
                   key="thinking"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
-                  className="p-4 bg-gray-900 rounded-lg border border-gray-800"
+                  className="p-4 bg-white rounded-lg border border-gray-200 shadow-sm"
                 >
-                  <div className="text-sm text-gray-400 mb-2">Model is reasoning...</div>
+                  <div className="text-sm text-gray-500 mb-2">Model is reasoning...</div>
                   <div className="space-y-2 text-sm">
                     <div className="flex items-center gap-2">
                       <span className="text-gray-500">User wants:</span>
-                      <span className="text-model">PowerPoint presentation</span>
+                      <span className="text-green-600 font-medium">PowerPoint presentation</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <span className="text-gray-500">Available skill:</span>
-                      <span className="text-system">pptx</span>
+                      <span className="text-purple-600 font-medium">pptx</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <span className="text-gray-500">Action:</span>
-                      <span className="text-tool">Read SKILL.md for instructions</span>
+                      <span className="text-orange-600 font-medium">Read SKILL.md for instructions</span>
                     </div>
                   </div>
                 </motion.div>
               )}
 
-              {/* Tool call read phase */}
               {step.phase === 'tool-call-read' && (
                 <ToolCallDisplay key="tool-read" toolCall={toolCallRead} isVisible={true} />
               )}
 
-              {/* File contents phase */}
               {step.phase === 'file-contents' && (
                 <FileViewer
                   key="file-contents"
@@ -236,7 +228,6 @@ export function SimulatorController() {
                 />
               )}
 
-              {/* Tool call execute phase */}
               {step.phase === 'tool-call-execute' && (
                 <div key="tool-execute" className="space-y-4">
                   <FileViewer
@@ -249,7 +240,6 @@ export function SimulatorController() {
                 </div>
               )}
 
-              {/* Terminal phase */}
               {step.phase === 'terminal' && (
                 <TerminalAnimation
                   key="terminal"
@@ -259,40 +249,38 @@ export function SimulatorController() {
                 />
               )}
 
-              {/* Response phase */}
               {step.phase === 'response' && (
                 <motion.div
                   key="response"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  className="p-4 bg-gray-900 rounded-lg border border-model/30"
+                  className="p-4 bg-white rounded-lg border border-green-200 shadow-sm"
                 >
-                  <div className="text-model text-sm font-medium mb-2">
+                  <div className="text-green-700 text-sm font-medium mb-2">
                     Result sent back to model
                   </div>
-                  <div className="text-sm text-gray-300">
+                  <div className="text-sm text-gray-600">
                     The script executed successfully. Claude can now tell the user their
                     presentation is ready.
                   </div>
                 </motion.div>
               )}
 
-              {/* Reveal phase */}
               {step.phase === 'reveal' && (
                 <motion.div
                   key="reveal"
                   initial={{ opacity: 0, scale: 0.95 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  className="p-6 bg-gradient-to-br from-gray-900 to-gray-950 rounded-lg border border-gray-700"
+                  className="p-6 bg-white rounded-lg border border-gray-200 shadow-sm"
                 >
-                  <h3 className="text-lg font-semibold mb-4">The Complete Flow</h3>
+                  <h3 className="text-lg font-semibold mb-4 text-gray-900">The Complete Flow</h3>
                   <div className="space-y-3">
                     {[
-                      { label: 'User request', color: 'user', text: 'Text in' },
-                      { label: 'Model reads skill', color: 'system', text: 'Text processing' },
-                      { label: 'Tool call output', color: 'tool', text: 'Text out (JSON)' },
-                      { label: 'Script executes', color: 'tool', text: 'Software intercepts' },
-                      { label: 'Result returned', color: 'model', text: 'Text back in' },
+                      { label: 'User request', color: 'blue', text: 'Text in' },
+                      { label: 'Model reads skill', color: 'purple', text: 'Text processing' },
+                      { label: 'Tool call output', color: 'orange', text: 'Text out (JSON)' },
+                      { label: 'Script executes', color: 'orange', text: 'Software intercepts' },
+                      { label: 'Result returned', color: 'green', text: 'Text back in' },
                     ].map((item, i) => (
                       <motion.div
                         key={i}
@@ -304,18 +292,18 @@ export function SimulatorController() {
                         <div
                           className={cn(
                             'w-2 h-2 rounded-full',
-                            item.color === 'user' && 'bg-user',
-                            item.color === 'model' && 'bg-model',
-                            item.color === 'tool' && 'bg-tool',
-                            item.color === 'system' && 'bg-system'
+                            item.color === 'blue' && 'bg-blue-500',
+                            item.color === 'green' && 'bg-green-500',
+                            item.color === 'orange' && 'bg-orange-500',
+                            item.color === 'purple' && 'bg-purple-500'
                           )}
                         />
-                        <span className="text-sm text-gray-300">{item.label}</span>
-                        <span className="text-xs text-gray-500 ml-auto">{item.text}</span>
+                        <span className="text-sm text-gray-700">{item.label}</span>
+                        <span className="text-xs text-gray-400 ml-auto">{item.text}</span>
                       </motion.div>
                     ))}
                   </div>
-                  <div className="mt-4 pt-4 border-t border-gray-800 text-sm text-gray-400">
+                  <div className="mt-4 pt-4 border-t border-gray-100 text-sm text-gray-500">
                     Just folders with text files. No magic.
                   </div>
                 </motion.div>
@@ -323,14 +311,13 @@ export function SimulatorController() {
             </AnimatePresence>
           </div>
 
-          {/* Narration bar */}
           {step.narration && (
-            <div className="px-4 py-3 border-t border-gray-800 bg-gray-900/50">
-              <p className="text-sm text-gray-300">{step.narration}</p>
+            <div className="px-4 py-3 border-t border-gray-200 bg-white">
+              <p className="text-sm text-gray-700">{step.narration}</p>
               {step.expandable && (
                 <button
                   onClick={() => setShowExpandable(!showExpandable)}
-                  className="flex items-center gap-1 text-xs text-system hover:text-system/80 mt-2 transition-colors"
+                  className="flex items-center gap-1 text-xs text-purple-600 hover:text-purple-700 mt-2 transition-colors"
                 >
                   <Info className="w-3 h-3" />
                   {step.expandable.title}
@@ -343,7 +330,7 @@ export function SimulatorController() {
                     initial={{ opacity: 0, height: 0 }}
                     animate={{ opacity: 1, height: 'auto' }}
                     exit={{ opacity: 0, height: 0 }}
-                    className="mt-2 p-3 bg-system/10 rounded-lg text-xs text-gray-300 border border-system/20"
+                    className="mt-2 p-3 bg-purple-50 rounded-lg text-xs text-gray-700 border border-purple-100"
                   >
                     {step.expandable.content}
                   </motion.div>

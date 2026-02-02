@@ -28,16 +28,16 @@ export function FileViewer({
       className={cn('', className)}
     >
       {/* File path breadcrumb */}
-      <div className="flex items-center gap-1 mb-2 text-sm text-gray-400">
+      <div className="flex items-center gap-1 mb-2 text-sm text-gray-500">
         <Folder className="w-4 h-4" />
         <span>{folderPath}/</span>
-        <FileText className="w-4 h-4 text-model" />
-        <span className="text-model font-medium">{fileName}</span>
+        <FileText className="w-4 h-4 text-green-600" />
+        <span className="text-green-600 font-medium">{fileName}</span>
       </div>
 
       {/* File content */}
-      <div className="bg-gray-900 rounded-lg border border-gray-800 overflow-hidden">
-        <div className="px-3 py-2 bg-gray-800/50 border-b border-gray-800 text-xs text-gray-400">
+      <div className="bg-white rounded-lg border border-gray-200 overflow-hidden shadow-sm">
+        <div className="px-3 py-2 bg-gray-50 border-b border-gray-200 text-xs text-gray-500">
           {fileName}
         </div>
 
@@ -60,7 +60,7 @@ export function FileViewer({
                 transition={{ delay: i * 0.02 }}
                 className={cn(
                   'py-0.5 px-2 -mx-2 rounded',
-                  isHighlighted && 'bg-model/10 border-l-2 border-model'
+                  isHighlighted && 'bg-green-50 border-l-2 border-green-500'
                 )}
               >
                 {formatMarkdownLine(line)}
@@ -76,7 +76,7 @@ export function FileViewer({
 function formatMarkdownLine(line: string): React.ReactNode {
   // Frontmatter
   if (line === '---') {
-    return <span className="text-gray-600">{line}</span>
+    return <span className="text-gray-400">{line}</span>
   }
 
   // YAML key-value
@@ -84,35 +84,35 @@ function formatMarkdownLine(line: string): React.ReactNode {
     const [key, ...value] = line.split(':')
     return (
       <>
-        <span className="text-purple-400">{key}</span>
+        <span className="text-purple-600">{key}</span>
         <span className="text-gray-400">:</span>
-        <span className="text-green-400">{value.join(':')}</span>
+        <span className="text-green-600">{value.join(':')}</span>
       </>
     )
   }
 
   // Headings
   if (line.startsWith('# ')) {
-    return <span className="text-yellow-400 font-bold text-base">{line}</span>
+    return <span className="text-amber-600 font-bold text-base">{line}</span>
   }
   if (line.startsWith('## ')) {
-    return <span className="text-yellow-300 font-semibold">{line}</span>
+    return <span className="text-amber-500 font-semibold">{line}</span>
   }
   if (line.startsWith('### ')) {
-    return <span className="text-yellow-200">{line}</span>
+    return <span className="text-amber-500">{line}</span>
   }
 
   // Code blocks
   if (line.startsWith('```')) {
-    return <span className="text-pink-400">{line}</span>
+    return <span className="text-pink-600">{line}</span>
   }
 
   // Bullet points
   if (line.startsWith('- ')) {
     return (
       <>
-        <span className="text-gray-500">- </span>
-        <span className="text-gray-300">{line.slice(2)}</span>
+        <span className="text-gray-400">- </span>
+        <span className="text-gray-700">{line.slice(2)}</span>
       </>
     )
   }
@@ -124,11 +124,11 @@ function formatMarkdownLine(line: string): React.ReactNode {
       <>
         {parts.map((part, i) =>
           part.startsWith('`') ? (
-            <span key={i} className="bg-gray-800 px-1 rounded text-pink-400">
+            <span key={i} className="bg-gray-100 px-1 rounded text-pink-600">
               {part}
             </span>
           ) : (
-            <span key={i} className="text-gray-300">
+            <span key={i} className="text-gray-700">
               {part}
             </span>
           )
@@ -137,5 +137,5 @@ function formatMarkdownLine(line: string): React.ReactNode {
     )
   }
 
-  return <span className="text-gray-300">{line}</span>
+  return <span className="text-gray-700">{line}</span>
 }

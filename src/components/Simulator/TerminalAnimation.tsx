@@ -32,7 +32,6 @@ export function TerminalAnimation({
       return
     }
 
-    // Typing animation
     const typingInterval = setInterval(() => {
       setTypedChars((c) => {
         if (c >= fullCommand.length) {
@@ -71,15 +70,15 @@ export function TerminalAnimation({
       animate={{ opacity: isVisible ? 1 : 0, y: isVisible ? 0 : 20 }}
       className={cn('', className)}
     >
-      <div className="bg-gray-950 rounded-lg border border-gray-800 overflow-hidden">
+      <div className="bg-gray-900 rounded-lg border border-gray-700 overflow-hidden shadow-lg">
         {/* Terminal header */}
-        <div className="px-3 py-2 bg-gray-900 border-b border-gray-800 flex items-center gap-2">
+        <div className="px-3 py-2 bg-gray-800 border-b border-gray-700 flex items-center gap-2">
           <div className="flex gap-1.5">
-            <div className="w-3 h-3 rounded-full bg-red-500/80" />
-            <div className="w-3 h-3 rounded-full bg-yellow-500/80" />
-            <div className="w-3 h-3 rounded-full bg-green-500/80" />
+            <div className="w-3 h-3 rounded-full bg-red-500" />
+            <div className="w-3 h-3 rounded-full bg-yellow-500" />
+            <div className="w-3 h-3 rounded-full bg-green-500" />
           </div>
-          <span className="text-xs text-gray-500 ml-2">Terminal</span>
+          <span className="text-xs text-gray-400 ml-2">Terminal</span>
         </div>
 
         {/* Terminal content */}
@@ -87,9 +86,9 @@ export function TerminalAnimation({
           {/* Command line */}
           <div className="flex items-center gap-2">
             <span className="text-green-400">$</span>
-            <span className="text-gray-300">
+            <span className="text-gray-100">
               {fullCommand.slice(0, typedChars)}
-              {phase === 'typing' && <span className="animate-blink">|</span>}
+              {phase === 'typing' && <span className="animate-blink text-gray-400">|</span>}
             </span>
           </div>
 
@@ -102,10 +101,10 @@ export function TerminalAnimation({
             >
               {phase === 'running' && (
                 <div className="space-y-2">
-                  <div className="text-gray-500 text-xs">Processing...</div>
-                  <div className="h-1.5 bg-gray-800 rounded-full overflow-hidden">
+                  <div className="text-gray-400 text-xs">Processing...</div>
+                  <div className="h-1.5 bg-gray-700 rounded-full overflow-hidden">
                     <motion.div
-                      className="h-full bg-tool rounded-full"
+                      className="h-full bg-orange-500 rounded-full"
                       initial={{ width: 0 }}
                       animate={{ width: `${progress}%` }}
                     />
@@ -137,9 +136,9 @@ export function TerminalAnimation({
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: phase === 'complete' ? 1 : 0 }}
-        className="mt-3 text-xs text-gray-400 flex items-center gap-2"
+        className="mt-3 text-xs text-gray-500 flex items-center gap-2"
       >
-        <Terminal className="w-3 h-3 text-tool" />
+        <Terminal className="w-3 h-3 text-orange-500" />
         <span>Pre-written script executed - same code, same result, every time</span>
       </motion.div>
     </motion.div>

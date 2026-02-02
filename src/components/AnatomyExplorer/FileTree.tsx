@@ -78,8 +78,8 @@ function FileTreeNode({
         className={cn(
           'w-full flex items-center gap-1.5 px-2 py-1 rounded-md transition-colors text-left',
           isSelected
-            ? 'bg-model/20 text-model'
-            : 'text-gray-400 hover:text-gray-200 hover:bg-gray-800/50'
+            ? 'bg-green-100 text-green-700'
+            : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
         )}
         style={{ paddingLeft: `${level * 12 + 8}px` }}
       >
@@ -95,13 +95,13 @@ function FileTreeNode({
 
         {isFolder ? (
           isExpanded ? (
-            <FolderOpen className="w-4 h-4 text-yellow-500 flex-shrink-0" />
+            <FolderOpen className="w-4 h-4 text-amber-500 flex-shrink-0" />
           ) : (
-            <Folder className="w-4 h-4 text-yellow-500 flex-shrink-0" />
+            <Folder className="w-4 h-4 text-amber-500 flex-shrink-0" />
           )
         ) : (
           <FileText
-            className={cn('w-4 h-4 flex-shrink-0', isSelected ? 'text-model' : 'text-gray-500')}
+            className={cn('w-4 h-4 flex-shrink-0', isSelected ? 'text-green-600' : 'text-gray-400')}
           />
         )}
 

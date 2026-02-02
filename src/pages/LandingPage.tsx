@@ -44,7 +44,7 @@ export function LandingPage() {
           animate={{ opacity: 1, y: 0 }}
           className="mb-6"
         >
-          <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-model/10 text-model text-sm">
+          <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-green-100 text-green-700 text-sm">
             <Sparkles className="w-4 h-4" />
             Interactive Learning Experience
           </span>
@@ -54,7 +54,7 @@ export function LandingPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="text-4xl md:text-5xl font-bold mb-4"
+          className="text-4xl md:text-5xl font-bold mb-4 text-gray-900"
         >
           How LLM Skills Work
         </motion.h1>
@@ -63,10 +63,10 @@ export function LandingPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="text-xl text-gray-400 mb-8 max-w-2xl mx-auto"
+          className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto"
         >
           Understand the surprisingly simple system that lets Claude execute complex tasks.
-          <span className="text-gray-300"> Just folders with text files.</span>
+          <span className="text-gray-900 font-medium"> Just folders with text files.</span>
         </motion.p>
 
         <motion.div
@@ -77,14 +77,14 @@ export function LandingPage() {
         >
           <Link
             to="/simulator"
-            className="flex items-center gap-2 px-6 py-3 bg-model text-white rounded-lg font-medium hover:bg-model/90 transition-colors"
+            className="flex items-center gap-2 px-6 py-3 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition-colors shadow-sm"
           >
             <Play className="w-5 h-5" />
             Start with the Simulator
           </Link>
           <Link
             to="/concepts"
-            className="flex items-center gap-2 px-6 py-3 bg-gray-800 text-gray-200 rounded-lg font-medium hover:bg-gray-700 transition-colors"
+            className="flex items-center gap-2 px-6 py-3 bg-white text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors border border-gray-200 shadow-sm"
           >
             Explore Concepts
             <ArrowRight className="w-5 h-5" />
@@ -104,39 +104,39 @@ export function LandingPage() {
             >
               <Link
                 to={feature.link}
-                className="block p-6 bg-gray-900 rounded-xl border border-gray-800 hover:border-gray-700 transition-colors group"
+                className="block p-6 bg-white rounded-xl border border-gray-200 hover:border-gray-300 hover:shadow-md transition-all group"
               >
                 <div className="flex items-start gap-4">
                   <div
                     className={`p-3 rounded-lg ${
                       feature.color === 'model'
-                        ? 'bg-model/10'
+                        ? 'bg-green-100'
                         : feature.color === 'system'
-                        ? 'bg-system/10'
+                        ? 'bg-purple-100'
                         : feature.color === 'tool'
-                        ? 'bg-tool/10'
-                        : 'bg-user/10'
+                        ? 'bg-orange-100'
+                        : 'bg-blue-100'
                     }`}
                   >
                     <feature.icon
                       className={`w-6 h-6 ${
                         feature.color === 'model'
-                          ? 'text-model'
+                          ? 'text-green-600'
                           : feature.color === 'system'
-                          ? 'text-system'
+                          ? 'text-purple-600'
                           : feature.color === 'tool'
-                          ? 'text-tool'
-                          : 'text-user'
+                          ? 'text-orange-600'
+                          : 'text-blue-600'
                       }`}
                     />
                   </div>
                   <div className="flex-1">
-                    <h3 className="font-semibold text-gray-100 group-hover:text-white transition-colors">
+                    <h3 className="font-semibold text-gray-900 group-hover:text-gray-700 transition-colors">
                       {feature.title}
                     </h3>
-                    <p className="text-sm text-gray-400 mt-1">{feature.description}</p>
+                    <p className="text-sm text-gray-500 mt-1">{feature.description}</p>
                   </div>
-                  <ArrowRight className="w-5 h-5 text-gray-600 group-hover:text-gray-400 group-hover:translate-x-1 transition-all" />
+                  <ArrowRight className="w-5 h-5 text-gray-300 group-hover:text-gray-500 group-hover:translate-x-1 transition-all" />
                 </div>
               </Link>
             </motion.div>
@@ -146,8 +146,8 @@ export function LandingPage() {
 
       {/* Key insights */}
       <div className="max-w-4xl mx-auto px-4 pb-16">
-        <div className="bg-gradient-to-br from-gray-900 to-gray-950 rounded-xl border border-gray-800 p-8">
-          <h2 className="text-xl font-semibold mb-6">Key Insights You'll Discover</h2>
+        <div className="bg-gradient-to-br from-gray-50 to-white rounded-xl border border-gray-200 p-8 shadow-sm">
+          <h2 className="text-xl font-semibold mb-6 text-gray-900">Key Insights You'll Discover</h2>
           <div className="grid sm:grid-cols-2 gap-6">
             {[
               {
@@ -168,11 +168,11 @@ export function LandingPage() {
               },
             ].map((insight, i) => (
               <div key={i} className="flex gap-3">
-                <div className="w-8 h-8 rounded-full bg-model/20 flex items-center justify-center flex-shrink-0">
-                  <span className="text-model font-semibold">{i + 1}</span>
+                <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
+                  <span className="text-green-600 font-semibold">{i + 1}</span>
                 </div>
                 <div>
-                  <div className="font-medium text-gray-200">{insight.title}</div>
+                  <div className="font-medium text-gray-900">{insight.title}</div>
                   <div className="text-sm text-gray-500">{insight.desc}</div>
                 </div>
               </div>
@@ -185,8 +185,8 @@ export function LandingPage() {
       <div className="max-w-4xl mx-auto px-4 pb-16">
         <div className="flex flex-col sm:flex-row gap-4 items-start">
           <div className="flex-1">
-            <h3 className="font-semibold mb-2">Track your progress</h3>
-            <p className="text-sm text-gray-400">
+            <h3 className="font-semibold mb-2 text-gray-900">Track your progress</h3>
+            <p className="text-sm text-gray-500">
               Your progress is saved locally. Complete all four experiences to fully understand
               how Skills work.
             </p>
