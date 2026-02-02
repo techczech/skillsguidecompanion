@@ -421,7 +421,7 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
           },
           generationConfig: {
             temperature: 0.7,
-            maxOutputTokens: 2048,
+            maxOutputTokens: 1000,
           }
         })
       }
@@ -442,11 +442,21 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
           parts?: Array<{ text?: string }>
         }
       }>
+      usageMetadata?: {
+        promptTokenCount?: number
+        candidatesTokenCount?: number
+        totalTokenCount?: number
+      }
     }
     const aiResponse = data.candidates?.[0]?.content?.parts?.[0]?.text || 'No response generated'
+    const tokenUsage = {
+      promptTokens: data.usageMetadata?.promptTokenCount || 0,
+      responseTokens: data.usageMetadata?.candidatesTokenCount || 0,
+      totalTokens: data.usageMetadata?.totalTokenCount || 0
+    }
 
     return new Response(
-      JSON.stringify({ response: aiResponse }),
+      JSON.stringify({ response: aiResponse, tokenUsage }),
       {
         status: 200,
         headers: { 'Content-Type': 'application/json', ...corsHeaders }

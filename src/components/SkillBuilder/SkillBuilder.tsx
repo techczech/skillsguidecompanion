@@ -11,6 +11,8 @@ import {
   Copy,
   Check,
   RotateCcw,
+  Sparkles,
+  Loader2,
 } from 'lucide-react'
 import { useProgressStore } from '@/store/progressStore'
 
@@ -48,7 +50,33 @@ export function SkillBuilder() {
   const [step, setStep] = useState(1)
   const [design, setDesign] = useState<SkillDesign>(initialDesign)
   const [copied, setCopied] = useState(false)
+  const [aiTip, setAiTip] = useState<string | null>(null)
+  const [loadingTip, setLoadingTip] = useState(false)
   const markWizardComplete = useProgressStore((s) => s.markWizardComplete)
+
+  const getAiFeedback = async () => {
+    if (loadingTip) return
+    setLoadingTip(true)
+    setAiTip(null)
+    try {
+      const response = await fetch('/api/skill-feedback', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          task: design.task,
+          name: design.name,
+          description: design.description,
+          step
+        })
+      })
+      const data = await response.json()
+      setAiTip(data.tip)
+    } catch {
+      setAiTip('Could not get feedback.')
+    } finally {
+      setLoadingTip(false)
+    }
+  }
 
   const totalSteps = 5
 
@@ -89,6 +117,7 @@ export function SkillBuilder() {
   const handleNext = () => {
     if (step < totalSteps) {
       setStep(step + 1)
+      setAiTip(null)
     } else {
       markWizardComplete()
     }
@@ -97,6 +126,7 @@ export function SkillBuilder() {
   const handlePrev = () => {
     if (step > 1) {
       setStep(step - 1)
+      setAiTip(null)
     }
   }
 
@@ -189,11 +219,35 @@ ${design.scripts.map((s) => `- \`${s}\` - [Description needed]`).join('\n')}`
                 className="w-full h-32 bg-white border border-gray-300 rounded-lg px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 transition-colors resize-none"
               />
 
-              <div className="mt-4 p-3 bg-amber-50 rounded-lg border border-amber-200">
+              <div className="mt-4 flex items-center gap-3">
+                <button
+                  onClick={getAiFeedback}
+                  disabled={design.task.length < 10 || loadingTip}
+                  className="flex items-center gap-2 px-3 py-1.5 text-sm bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded-lg hover:bg-purple-200 dark:hover:bg-purple-900/50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                >
+                  {loadingTip ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <Sparkles className="w-4 h-4" />
+                  )}
+                  Get AI tip
+                </button>
+                {aiTip && (
+                  <motion.p
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    className="text-sm text-gray-600 dark:text-gray-400 flex-1"
+                  >
+                    {aiTip}
+                  </motion.p>
+                )}
+              </div>
+
+              <div className="mt-4 p-3 bg-amber-50 dark:bg-amber-900/20 rounded-lg border border-amber-200 dark:border-amber-800">
                 <div className="flex items-start gap-2 text-sm">
-                  <Lightbulb className="w-4 h-4 text-amber-600 mt-0.5 flex-shrink-0" />
-                  <div className="text-gray-600">
-                    <span className="text-gray-700 font-medium">Examples:</span>
+                  <Lightbulb className="w-4 h-4 text-amber-600 dark:text-amber-400 mt-0.5 flex-shrink-0" />
+                  <div className="text-gray-600 dark:text-gray-400">
+                    <span className="text-gray-700 dark:text-gray-300 font-medium">Examples:</span>
                     <ul className="mt-1 space-y-1 text-xs">
                       <li>Convert recipes to shopping lists</li>
                       <li>Generate social media posts from blog articles</li>
@@ -236,11 +290,35 @@ ${design.scripts.map((s) => `- \`${s}\` - [Description needed]`).join('\n')}`
                 </div>
               </div>
 
-              <div className="mt-4 p-3 bg-purple-50 rounded-lg border border-purple-200">
+              <div className="mt-4 flex items-center gap-3">
+                <button
+                  onClick={getAiFeedback}
+                  disabled={design.description.length < 10 || loadingTip}
+                  className="flex items-center gap-2 px-3 py-1.5 text-sm bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded-lg hover:bg-purple-200 dark:hover:bg-purple-900/50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                >
+                  {loadingTip ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <Sparkles className="w-4 h-4" />
+                  )}
+                  Get AI tip
+                </button>
+                {aiTip && (
+                  <motion.p
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    className="text-sm text-gray-600 dark:text-gray-400 flex-1"
+                  >
+                    {aiTip}
+                  </motion.p>
+                )}
+              </div>
+
+              <div className="mt-4 p-3 bg-purple-50 dark:bg-purple-900/20 rounded-lg border border-purple-200 dark:border-purple-800">
                 <div className="flex items-start gap-2 text-sm">
-                  <Lightbulb className="w-4 h-4 text-purple-600 mt-0.5 flex-shrink-0" />
-                  <div className="text-gray-600">
-                    <span className="text-purple-700 font-medium">Tip:</span> Add trigger words like "when user
+                  <Lightbulb className="w-4 h-4 text-purple-600 dark:text-purple-400 mt-0.5 flex-shrink-0" />
+                  <div className="text-gray-600 dark:text-gray-400">
+                    <span className="text-purple-700 dark:text-purple-300 font-medium">Tip:</span> Add trigger words like "when user
                     mentions" or "when user asks to" to help Claude know when to use this skill.
                   </div>
                 </div>

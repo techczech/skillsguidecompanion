@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Send, Loader2, Bot, User, Trash2 } from 'lucide-react'
+import { Send, Loader2, Bot, User, Trash2, Eye, EyeOff, ChevronDown, ChevronUp } from 'lucide-react'
+import ReactMarkdown from 'react-markdown'
 
 interface Message {
   id: string
@@ -13,12 +14,21 @@ interface ChatHistory {
   parts: { text: string }[]
 }
 
+interface TokenUsage {
+  promptTokens: number
+  responseTokens: number
+  totalTokens: number
+}
+
 export function AskChat() {
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState('')
   const [isLoading, setIsLoading] = useState(false)
+  const [sessionTokens, setSessionTokens] = useState(0)
+  const [showContext, setShowContext] = useState(false)
+  const [contextData, setContextData] = useState<{ systemPrompt: string; description: string } | null>(null)
+  const [contextExpanded, setContextExpanded] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
-  const inputRef = useRef<HTMLTextAreaElement>(null)
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -27,6 +37,16 @@ export function AskChat() {
   useEffect(() => {
     scrollToBottom()
   }, [messages])
+
+  // Fetch context data when toggle is enabled
+  useEffect(() => {
+    if (showContext && !contextData) {
+      fetch('/api/context')
+        .then(res => res.json())
+        .then(data => setContextData(data))
+        .catch(err => console.error('Failed to fetch context:', err))
+    }
+  }, [showContext, contextData])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -43,7 +63,6 @@ export function AskChat() {
     setIsLoading(true)
 
     try {
-      // Build history for API
       const history: ChatHistory[] = messages.map(msg => ({
         role: msg.role,
         parts: [{ text: msg.content }]
@@ -73,6 +92,11 @@ export function AskChat() {
       }
 
       setMessages(prev => [...prev, assistantMessage])
+
+      // Track token usage
+      if (data.tokenUsage) {
+        setSessionTokens(prev => prev + (data.tokenUsage as TokenUsage).totalTokens)
+      }
     } catch (error) {
       console.error('Chat error:', error)
       const errorMessage: Message = {
@@ -95,6 +119,7 @@ export function AskChat() {
 
   const clearChat = () => {
     setMessages([])
+    setSessionTokens(0)
   }
 
   const suggestedQuestions = [
@@ -106,6 +131,51 @@ export function AskChat() {
 
   return (
     <div className="flex flex-col h-[calc(100vh-8rem)] max-w-3xl mx-auto">
+      {/* Context Transparency Toggle */}
+      <div className="px-4 py-2 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50">
+        <div className="flex items-center justify-between">
+          <button
+            onClick={() => setShowContext(!showContext)}
+            className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 transition-colors"
+          >
+            {showContext ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+            Context Transparency
+          </button>
+          <div className="text-xs text-gray-500 dark:text-gray-400">
+            Session tokens: {sessionTokens.toLocaleString()}
+          </div>
+        </div>
+
+        {showContext && contextData && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            className="mt-3"
+          >
+            <div className="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+              <button
+                onClick={() => setContextExpanded(!contextExpanded)}
+                className="w-full px-3 py-2 flex items-center justify-between text-left text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800"
+              >
+                <span>Full System Prompt (includes complete article)</span>
+                {contextExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+              </button>
+              {contextExpanded && (
+                <div className="px-3 pb-3">
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">
+                    {contextData.description}
+                  </p>
+                  <pre className="text-xs bg-gray-50 dark:bg-gray-800 p-3 rounded overflow-auto max-h-64 whitespace-pre-wrap font-mono text-gray-700 dark:text-gray-300">
+                    {contextData.systemPrompt}
+                  </pre>
+                </div>
+              )}
+            </div>
+          </motion.div>
+        )}
+      </div>
+
       {/* Messages Area */}
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
         {messages.length === 0 ? (
@@ -155,9 +225,15 @@ export function AskChat() {
                         : 'bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100'
                     }`}
                   >
-                    <p className="whitespace-pre-wrap text-sm leading-relaxed">
-                      {message.content}
-                    </p>
+                    {message.role === 'model' ? (
+                      <div className="prose prose-sm dark:prose-invert max-w-none prose-p:my-2 prose-ul:my-2 prose-ol:my-2 prose-li:my-0.5 prose-headings:my-2 prose-pre:bg-gray-200 dark:prose-pre:bg-gray-700 prose-pre:p-2 prose-pre:rounded prose-code:text-purple-600 dark:prose-code:text-purple-400">
+                        <ReactMarkdown>{message.content}</ReactMarkdown>
+                      </div>
+                    ) : (
+                      <p className="whitespace-pre-wrap text-sm leading-relaxed">
+                        {message.content}
+                      </p>
+                    )}
                   </div>
                   {message.role === 'user' && (
                     <div className="flex-shrink-0 w-8 h-8 rounded-full bg-purple-600 flex items-center justify-center">
@@ -201,7 +277,6 @@ export function AskChat() {
           )}
           <div className="flex-1 relative">
             <textarea
-              ref={inputRef}
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
@@ -224,7 +299,7 @@ export function AskChat() {
           </div>
         </form>
         <p className="text-xs text-gray-500 dark:text-gray-400 mt-2 text-center">
-          Powered by Gemini Flash. Answers based on the Skills article.
+          Powered by Gemini 3 Flash Preview. Max 1,000 tokens per response.
         </p>
       </div>
     </div>
