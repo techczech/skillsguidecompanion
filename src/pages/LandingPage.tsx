@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { Play, Map, FolderTree, Wrench, ArrowRight, Sparkles, ExternalLink, BookOpen } from 'lucide-react'
+import { Play, Map, FolderTree, Wrench, ArrowRight, Sparkles, BookOpen } from 'lucide-react'
 import { ProgressTracker } from '@/components/shared/ProgressTracker'
 
 const features = [
@@ -81,15 +81,13 @@ export function LandingPage() {
           transition={{ delay: 0.3 }}
           className="flex flex-col sm:flex-row items-center justify-center gap-4"
         >
-          <a
-            href="https://schemasandpropositions.substack.com/p/weve-been-using-ai-wrong-agent-skills"
-            target="_blank"
-            rel="noopener noreferrer"
+          <Link
+            to="/reader"
             className="flex items-center gap-2 px-6 py-3 bg-purple-600 text-white rounded-lg font-medium hover:bg-purple-700 transition-colors shadow-sm"
           >
-            <ExternalLink className="w-5 h-5" />
-            Read the Post
-          </a>
+            <BookOpen className="w-5 h-5" />
+            Read the Article
+          </Link>
           <Link
             to="/simulator"
             className="flex items-center gap-2 px-6 py-3 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition-colors shadow-sm"
