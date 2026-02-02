@@ -91,14 +91,49 @@ export function SimulatorController() {
   }
 
   return (
-    <div className="h-full flex flex-col bg-gray-50">
+    <div className="h-full flex flex-col bg-gray-100">
+      {/* Step description banner - always visible at top */}
+      <div className="bg-gradient-to-r from-purple-600 to-purple-700 text-white px-6 py-4">
+        <div className="flex items-center justify-between">
+          <div>
+            <div className="flex items-center gap-3 mb-1">
+              <span className="bg-white/20 px-2 py-0.5 rounded text-xs font-medium">
+                Step {currentStep + 1} of {simulatorSteps.length}
+              </span>
+              <span className="text-purple-200 text-sm">{step.title}</span>
+            </div>
+            {step.narration && (
+              <p className="text-white/90 text-base font-medium">{step.narration}</p>
+            )}
+          </div>
+          {step.expandable && (
+            <button
+              onClick={() => setShowExpandable(!showExpandable)}
+              className="flex items-center gap-1 text-xs text-purple-200 hover:text-white bg-white/10 px-3 py-1.5 rounded-lg transition-colors"
+            >
+              <Info className="w-3 h-3" />
+              {step.expandable.title}
+            </button>
+          )}
+        </div>
+        <AnimatePresence>
+          {showExpandable && step.expandable && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              className="mt-3 p-3 bg-white/10 rounded-lg text-sm text-purple-100"
+            >
+              {step.expandable.content}
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+
       {/* Controls bar */}
-      <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200 bg-white">
+      <div className="flex items-center justify-between px-4 py-2 border-b border-gray-200 bg-white">
         <div className="flex items-center gap-2">
-          <span className="text-sm font-medium text-gray-900">{step.title}</span>
-          <span className="text-xs text-gray-500">
-            {currentStep + 1}/{simulatorSteps.length}
-          </span>
+          <span className="text-xs text-gray-500">Controls</span>
         </div>
 
         <div className="flex items-center gap-1">
@@ -167,18 +202,31 @@ export function SimulatorController() {
       </div>
 
       {/* Main content area */}
-      <div className="flex-1 flex overflow-hidden">
-        {/* Left: Chat interface */}
-        <div className="w-1/2 border-r border-gray-200">
-          <ChatInterface
-            messages={messages}
-            isThinking={step.phase === 'thinking'}
-            className="h-full"
-          />
+      <div className="flex-1 flex overflow-hidden p-4 gap-4">
+        {/* Left: Chat interface - styled like a chatbot window */}
+        <div className="w-2/5 flex flex-col">
+          <div className="bg-white rounded-xl shadow-lg border border-gray-200 flex-1 overflow-hidden flex flex-col">
+            {/* Chat header */}
+            <div className="px-4 py-3 border-b border-gray-100 bg-gray-50 rounded-t-xl">
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                <span className="text-sm font-medium text-gray-700">Claude</span>
+              </div>
+            </div>
+            <ChatInterface
+              messages={messages}
+              isThinking={step.phase === 'thinking'}
+              className="flex-1"
+            />
+          </div>
         </div>
 
         {/* Right: Behind the scenes */}
-        <div className="w-1/2 flex flex-col overflow-hidden bg-gray-100">
+        <div className="w-3/5 flex flex-col overflow-hidden bg-white rounded-xl shadow-lg border border-gray-200">
+          {/* Behind the scenes header */}
+          <div className="px-4 py-3 border-b border-gray-100 bg-gray-50 rounded-t-xl">
+            <span className="text-sm font-medium text-gray-700">Behind the Scenes</span>
+          </div>
           <div className="flex-1 overflow-y-auto p-4 space-y-4">
             <AnimatePresence mode="wait">
               {(step.phase === 'system-prompt' || step.phase === 'setup') && (
@@ -346,33 +394,6 @@ export function SimulatorController() {
             </AnimatePresence>
           </div>
 
-          {step.narration && (
-            <div className="px-4 py-3 border-t border-gray-200 bg-white">
-              <p className="text-sm text-gray-700">{step.narration}</p>
-              {step.expandable && (
-                <button
-                  onClick={() => setShowExpandable(!showExpandable)}
-                  className="flex items-center gap-1 text-xs text-purple-600 hover:text-purple-700 mt-2 transition-colors"
-                >
-                  <Info className="w-3 h-3" />
-                  {step.expandable.title}
-                </button>
-              )}
-
-              <AnimatePresence>
-                {showExpandable && step.expandable && (
-                  <motion.div
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: 'auto' }}
-                    exit={{ opacity: 0, height: 0 }}
-                    className="mt-2 p-3 bg-purple-50 rounded-lg text-xs text-gray-700 border border-purple-100"
-                  >
-                    {step.expandable.content}
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-          )}
         </div>
       </div>
     </div>

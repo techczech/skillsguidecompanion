@@ -53,7 +53,34 @@ function slugify(text: string): string {
   return text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
 }
 
-// Process text to add concept links
+// Footnote link component
+function FootnoteRef({ num }: { num: string }) {
+  const handleClick = () => {
+    // Navigate to footnotes section
+    const footnotesSection = document.getElementById('footnote-' + num)
+    if (footnotesSection) {
+      footnotesSection.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      footnotesSection.classList.add('bg-yellow-100', 'dark:bg-yellow-900/30')
+      setTimeout(() => {
+        footnotesSection.classList.remove('bg-yellow-100', 'dark:bg-yellow-900/30')
+      }, 2000)
+    }
+  }
+
+  return (
+    <sup>
+      <button
+        onClick={handleClick}
+        className="text-purple-600 dark:text-purple-400 hover:text-purple-800 dark:hover:text-purple-300 hover:underline font-medium ml-0.5"
+        title={`Go to footnote ${num}`}
+      >
+        [{num}]
+      </button>
+    </sup>
+  )
+}
+
+// Process text to add concept links and footnote references
 function processTextWithConcepts(text: string): React.ReactNode[] {
   const parts: React.ReactNode[] = []
   let remaining = text
@@ -67,6 +94,48 @@ function processTextWithConcepts(text: string): React.ReactNode[] {
   while (remaining.length > 0) {
     let matchFound = false
 
+    // Check for footnote references first (e.g., [^1], [^2])
+    const footnoteMatch = remaining.match(/\[\^(\d+)\]/)
+    if (footnoteMatch && footnoteMatch.index !== undefined) {
+      // Check if there's a concept match before the footnote
+      let conceptMatchBefore = false
+      for (const [keyword, conceptId] of sortedKeywords) {
+        const regex = new RegExp(`\\b(${keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})\\b`, 'i')
+        const conceptMatch = remaining.match(regex)
+
+        if (conceptMatch && conceptMatch.index !== undefined && conceptMatch.index < footnoteMatch.index) {
+          // Add text before the concept match
+          if (conceptMatch.index > 0) {
+            parts.push(<span key={key++}>{remaining.slice(0, conceptMatch.index)}</span>)
+          }
+          // Add the concept link
+          parts.push(
+            <ConceptLink key={key++} conceptId={conceptId}>
+              {conceptMatch[1]}
+            </ConceptLink>
+          )
+          remaining = remaining.slice(conceptMatch.index + conceptMatch[0].length)
+          conceptMatchBefore = true
+          matchFound = true
+          break
+        }
+      }
+
+      if (!conceptMatchBefore) {
+        // Add text before the footnote
+        if (footnoteMatch.index > 0) {
+          parts.push(<span key={key++}>{remaining.slice(0, footnoteMatch.index)}</span>)
+        }
+        // Add the footnote link
+        parts.push(<FootnoteRef key={key++} num={footnoteMatch[1]} />)
+        remaining = remaining.slice(footnoteMatch.index + footnoteMatch[0].length)
+        matchFound = true
+      }
+
+      if (matchFound) continue
+    }
+
+    // Check for concept matches
     for (const [keyword, conceptId] of sortedKeywords) {
       const regex = new RegExp(`\\b(${keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})\\b`, 'i')
       const match = remaining.match(regex)
@@ -91,9 +160,19 @@ function processTextWithConcepts(text: string): React.ReactNode[] {
     }
 
     if (!matchFound) {
-      // No more matches, add remaining text
-      parts.push(<span key={key++}>{remaining}</span>)
-      break
+      // Check one more time for footnotes at the end
+      const endFootnoteMatch = remaining.match(/\[\^(\d+)\]/)
+      if (endFootnoteMatch && endFootnoteMatch.index !== undefined) {
+        if (endFootnoteMatch.index > 0) {
+          parts.push(<span key={key++}>{remaining.slice(0, endFootnoteMatch.index)}</span>)
+        }
+        parts.push(<FootnoteRef key={key++} num={endFootnoteMatch[1]} />)
+        remaining = remaining.slice(endFootnoteMatch.index + endFootnoteMatch[0].length)
+      } else {
+        // No more matches, add remaining text
+        parts.push(<span key={key++}>{remaining}</span>)
+        break
+      }
     }
   }
 
@@ -524,6 +603,35 @@ export function Reader() {
                   return <h3 id={slugify(text)} className="scroll-mt-20">{children}</h3>
                 },
                 p: ({ children }) => {
+                  // Check if this is a footnote definition (starts with [^n]:)
+                  const childText = typeof children === 'string'
+                    ? children
+                    : Array.isArray(children) && typeof children[0] === 'string'
+                      ? children[0]
+                      : ''
+
+                  const footnoteMatch = childText.match(/^\[\^(\d+)\]:\s*(.*)/)
+                  if (footnoteMatch) {
+                    const [, num, content] = footnoteMatch
+                    const restContent = Array.isArray(children)
+                      ? children.slice(1)
+                      : []
+                    return (
+                      <div
+                        id={`footnote-${num}`}
+                        className="flex gap-3 p-3 rounded-lg transition-colors duration-500 scroll-mt-20"
+                      >
+                        <span className="text-purple-600 dark:text-purple-400 font-semibold text-sm min-w-[2rem]">
+                          [{num}]
+                        </span>
+                        <span className="text-gray-700 dark:text-gray-300 text-sm">
+                          {processTextWithConcepts(content)}
+                          {restContent}
+                        </span>
+                      </div>
+                    )
+                  }
+
                   // Process text nodes within paragraphs
                   const processedChildren = Array.isArray(children)
                     ? children.map((child, i) =>
